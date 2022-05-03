@@ -7,19 +7,30 @@ SUSPENDED = "suspended"
 REJECTED = "rejected"
 ACCEPTED = "accepted"
 
+def closeConnection():
+    print("closing connection...")
+    con.close
+
+
 print("test running...")
+
+#these should be predifined in the database
+#   faculte(id autoInc,name)
+#   departement(id autoInc,nom,id_fac)
+#   specialite(id autoInc, name, niveau, orientation_places, transfer_places, id_dep, id_fac)
+
+
+
+#orientation(matricule,id_orientation,niveau-etude,date_premier_insc,etat,choix1...)
 
 
 #etudiant(matricule,email,password,nom,prenom,telephone,sexe,date_naissance)
-#faculte(id autoInc,name)
-#departement(id autoInc,nom,id_fac)
-#orientation_deadline(id autoInc,start,finish)
-#transfer_deadline(id autoInc,start,finish)
-#transfer(matricule,id_transfer,moyen_bac,filiere_bac,niveau-etude,date_premier_insc,formation,univ_origin,conge_academic,etat,choix1...)
-#orientation(matricule,id_orientation,niveau-etude,date_premier_insc,etat,choix1...)
-#specialite(id autoInc, name, niveau, orientation_places, transfer_places, id_dep, id_fac)
-#notification(id autoInc, matricule, message)
-#condition(id autoInc, cond, type)
+def studentLogIn(email,password):
+    return
+
+def studentSignUp(matricule, email, password, nom, prenom, telephone ,sexe, date_naissance):
+    return
+
 
 #admin(email,password,telephone,nom,prenom,id_dep,id_fac)
 def adminLogIn(email, password):
@@ -48,30 +59,106 @@ def adminSignUp(email, password, nom, prenom, telephone, id_dep, id_fac):
         print("signed up successfully")
         con.commit()
         return 'ok'
-        
+
+
+
 #orientation_deadline(id autoInc,start,finish)
-def setOrientationDeadline():
+def setOrientationDeadline(start,finish):
+    try:
+        cursor.execute('insert into orientation_deadline values (?,?,?)',(1,start,finish))
+    except:
+        print('orientation deadline already set !')
+        return None
+    else:
+        print('orientation deadline set successfelly')
+        con.commit()
+        return 'ok'
+
+def deleteOrientationDeadline():
+    try:
+        cursor.execute('delete from orientation_deadline where id =:id',{"id":1})
+    except:
+        print('orientation deadline does not exist')
+        return None
+    else:
+        print('orientation deadline deleted')
+        con.commit()
+        return 'ok'
+
+def updateOrientationDeadline(start,finish):
     return
 
-def setTransferDeadline():
+def getOrientationDeadline():
+    return
+
+
+
+#transfer_deadline(id autoInc,start,finish)
+def setTransferDeadline(start,finish):
+    try:
+        cursor.execute('insert into transfer_deadline values (?,?,?)',(1,start,finish))
+    except:
+        print('transfer deadline already set !')
+        return None
+    else:
+        print('transfer deadline set successfelly')
+        con.commit()
+        return 'ok'
+
+def deleteTransferDeadline():
+    try:
+        cursor.execute('delete from transfer_deadline where id =:id',{"id":1})
+    except:
+        print('transfer deadline does not exist')
+        return None
+    else:
+        print('transfer deadline deleted')
+        con.commit()
+        return 'ok'
+def updateTransferDeadline(start,finish):
+    return
+
+def getTransferDeadline():
+    return
+
+
+#transfer(matricule,id_transfer,moyen_bac,filiere_bac,niveau-etude,date_premier_insc,formation,univ_origin,conge_academic,etat,choix1...)
+def addTransferRequest():
+    return
+
+def updateTransferRequest():
+    return
+
+def deleteTransferRequest():
+    return
+
+def getTransferRequest(matricule):
     return
 
 def setTransferRequestState():
     return
 
-def addCondition():
+
+
+#condition(id autoInc, cond, type)
+#type should be INTERN, EXTERN or ORIENTATION
+def addCondition(type, condition):
     return
 
-def deleteCondition():
+def deleteCondition(id):
     return
 
-def updateCondition():
+def updateCondition(id,condition):
+    return
+
+def selectConditions(type):
     return
 
 
+#notification(id autoInc, matricule, message)
+def addNewNotification(matricule, message):
+    return
 
-
-def closeConnection():
-    print("closing connection...")
-    con.close
+def getAllNotifications(matricule):
+    return
 
