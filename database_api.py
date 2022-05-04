@@ -1,5 +1,5 @@
 import sqlite3
-con = sqlite3.connect('app_data.db')
+con = sqlite3.connect('D:/Projects/transfer_management_app/transfer_orientations_app/app_data.db')
 cursor = con.cursor()
 
 READY = "ready"
@@ -26,10 +26,31 @@ print("test running...")
 
 #etudiant(matricule,email,password,nom,prenom,telephone,sexe,date_naissance)
 def studentLogIn(email,password):
-    return
+    cursor.execute("select * from etudiant where email=:email and password=:password",{"email":email,"password":password})
+    res = cursor.fetchone()
+    if res != None:
+        student = {"matricule":res[0],
+        "email":res[1],
+        "password":res[2],
+        "nom":res[3],
+        "prenom":res[4],
+        "telephone":res[5],
+        "sexe":res[6],
+        "date_naissance":res[7],}
+        return student
+    return None
 
 def studentSignUp(matricule, email, password, nom, prenom, telephone ,sexe, date_naissance):
-    return
+    try:
+        cursor.execute("insert into etudiant values (?,?,?,?,?,?,?,?)",(matricule,email,password,nom,prenom,telephone,sexe,date_naissance))
+    except:
+        print('student already exists')
+        return None
+    else:
+        print('student signed up')
+        con.commit()
+        return 'ok'
+    
 
 
 #admin(email,password,telephone,nom,prenom,id_dep,id_fac)
@@ -53,10 +74,10 @@ def adminSignUp(email, password, nom, prenom, telephone, id_dep, id_fac):
     try:
         cursor.execute('insert into admin values (?,?,?,?,?,?,?)',(email,password,telephone,nom,prenom,id_dep,id_fac))
     except:
-        print("user already exists")
+        print("admin already exists")
         return None
     else:
-        print("signed up successfully")
+        print("admin signed up successfully")
         con.commit()
         return 'ok'
 
