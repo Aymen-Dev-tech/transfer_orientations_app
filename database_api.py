@@ -1,5 +1,10 @@
 import sqlite3
-con = sqlite3.connect('D:/Projects/transfer_management_app/transfer_orientations_app/app_data.db')
+from sqlite3 import Error
+
+#change this path corresponding to where the db file is at
+absolute_db_path = 'D:/Projects/transfer_management_app/transfer_orientations_app/'
+database = absolute_db_path+'app_data.db'
+con = sqlite3.connect(database)
 cursor = con.cursor()
 
 READY = "ready"
@@ -25,7 +30,7 @@ print("test running...")
 
 
 #etudiant(matricule,email,password,nom,prenom,telephone,sexe,date_naissance)
-def studentLogIn(email,password):
+def studentLogIn(email:str,password:str):
     cursor.execute("select * from etudiant where email=:email and password=:password",{"email":email,"password":password})
     res = cursor.fetchone()
     if res != None:
@@ -40,10 +45,11 @@ def studentLogIn(email,password):
         return student
     return None
 
-def studentSignUp(matricule, email, password, nom, prenom, telephone ,sexe, date_naissance):
+def studentSignUp(matricule:int, email:str, password:str, nom:str, prenom:str, telephone:str ,sexe:str, date_naissance:str):
     try:
         cursor.execute("insert into etudiant values (?,?,?,?,?,?,?,?)",(matricule,email,password,nom,prenom,telephone,sexe,date_naissance))
-    except:
+    except Error as e:
+        print(e)
         print('student already exists')
         return None
     else:
@@ -54,7 +60,7 @@ def studentSignUp(matricule, email, password, nom, prenom, telephone ,sexe, date
 
 
 #admin(email,password,telephone,nom,prenom,id_dep,id_fac)
-def adminLogIn(email, password):
+def adminLogIn(email:str, password:str):
     cursor.execute("select * from admin where email=:email and password=:password",{"email":email,"password":password})    
     res = cursor.fetchone()
     if res != None:
@@ -70,10 +76,11 @@ def adminLogIn(email, password):
     return None
 
 
-def adminSignUp(email, password, nom, prenom, telephone, id_dep, id_fac):
+def adminSignUp(email:str, password:str, nom:str, prenom:str, telephone:str, id_dep:int, id_fac:int):
     try:
         cursor.execute('insert into admin values (?,?,?,?,?,?,?)',(email,password,telephone,nom,prenom,id_dep,id_fac))
-    except:
+    except Error as e:
+        print(e)
         print("admin already exists")
         return None
     else:
@@ -84,10 +91,11 @@ def adminSignUp(email, password, nom, prenom, telephone, id_dep, id_fac):
 
 
 #orientation_deadline(id autoInc,start,finish)
-def setOrientationDeadline(start,finish):
+def setOrientationDeadline(start:str,finish:str):
     try:
         cursor.execute('insert into orientation_deadline values (?,?,?)',(1,start,finish))
-    except:
+    except Error as e:
+        print(e)
         print('orientation deadline already set !')
         return None
     else:
@@ -98,7 +106,8 @@ def setOrientationDeadline(start,finish):
 def deleteOrientationDeadline():
     try:
         cursor.execute('delete from orientation_deadline where id =:id',{"id":1})
-    except:
+    except Error as e:
+        print(e)
         print('orientation deadline does not exist')
         return None
     else:
@@ -106,7 +115,7 @@ def deleteOrientationDeadline():
         con.commit()
         return 'ok'
 
-def updateOrientationDeadline(start,finish):
+def updateOrientationDeadline(start:str,finish:str):
     return
 
 def getOrientationDeadline():
@@ -115,10 +124,11 @@ def getOrientationDeadline():
 
 
 #transfer_deadline(id autoInc,start,finish)
-def setTransferDeadline(start,finish):
+def setTransferDeadline(start:str,finish:str):
     try:
         cursor.execute('insert into transfer_deadline values (?,?,?)',(1,start,finish))
-    except:
+    except Error as e:
+        print(e)
         print('transfer deadline already set !')
         return None
     else:
@@ -129,18 +139,33 @@ def setTransferDeadline(start,finish):
 def deleteTransferDeadline():
     try:
         cursor.execute('delete from transfer_deadline where id =:id',{"id":1})
-    except:
+    except Error as e:
+        print(e)
         print('transfer deadline does not exist')
         return None
     else:
         print('transfer deadline deleted')
         con.commit()
         return 'ok'
-def updateTransferDeadline(start,finish):
-    return
+
+def updateTransferDeadline(start:str,finish:str):
+    try:
+        cursor.execute('update transfer_deadline set start =:start ,finish =:finish',{'start':start,'finish':finish})
+    except Error as e:
+        print(e)
+        return None
+    else :
+        con.commit()
+        return 'ok'
+    
 
 def getTransferDeadline():
-    return
+    cursor.execute('select * from transfer_deadline where id =1')
+    res = cursor.fetchone()
+    if res != None:
+        deadline = {'id':res[0],'start':res[1],'finish':res[2]}
+        return deadline
+    return None
 
 
 #transfer(matricule,id_transfer,moyen_bac,filiere_bac,niveau-etude,date_premier_insc,formation,univ_origin,conge_academic,etat,choix1...)
@@ -153,7 +178,7 @@ def updateTransferRequest():
 def deleteTransferRequest():
     return
 
-def getTransferRequest(matricule):
+def getTransferRequest(matricule:int):
     return
 
 def setTransferRequestState():
