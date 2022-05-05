@@ -1,0 +1,66 @@
+{% extends "admin/base.html" %}
+
+{% block title %}transfer interne{% endblock %}
+
+{% block content %}
+    <main>
+        <div class="container-fluid px-4">
+            <h1 class="mt-4">Liste des Transfer interne</h1>
+            <ol class="breadcrumb mb-4">
+                <li class="breadcrumb-item active">Info</li>
+            </ol>
+            <div class="card mb-4">
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                          <tr>
+                            <th scope="col" class="table-info">#</th>
+                            <th scope="col" class="table-info">Id Transfer</th>
+                            <th scope="col" class="table-info">Matricule Etudiant</th>
+                            <th scope="col" class="table-info">Origin</th>
+                            <th scope="col" class="table-info">Etat</th>
+                            <th scope="col" class="table-info"></th>
+                            <th scope="col" class="table-info"></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <th scope="row">1</th>
+                            <td><a href="/admin/demande_details/978654">#978654</a></td>
+                            <td>18497653126</td>
+                            <td>Science Eco</td>
+                            <td>En attente</td>
+                            <td><a class="link-success text-decoration-none" href="#">accepter</a></td>
+                            <td><a class="link-danger text-decoration-none" href="#">refuser</a></td>
+                          </tr>
+                          <tr>
+                            <th scope="row">2</th>
+                            <td><a href="/admin/demande_details/978654">#978654</a></td>
+                            <td>18497653126</td>
+                            <td>NTIC</td>
+                            <td>En attente</td>
+                            <td><a class="link-success text-decoration-none" href="#">accepter</a></td>
+                            <td><a class="link-danger text-decoration-none" href="#">refuser</a></td>
+                          </tr>
+                          <tr>
+                            <th scope="row">3</th>
+                            <td><a href="/admin/demande_details/978654">#978654</a></td>
+                            <td>18497653126</td>
+                            <td>NTIC</td>
+                            <td>En attente</td>
+                            <td><a class="link-success text-decoration-none" href="#">accepter</a></td>
+                            <td><a class="link-danger text-decoration-none" href="#">refuser</a></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+{% endblock content %}
+
+{% block javascripts %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script src="{{url_for('static',filename='scripts.js')}}"></script>
+{% endblock javascripts %}
