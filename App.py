@@ -1,29 +1,32 @@
-from flask import Flask, render_template
-from flask_bootstrap import Bootstrap
+import os
+from unicodedata import name
+import click
+from flask_migrate import Migrate
+from sqlalchemy import true
+from app import create_app, db
+from app.models import User, Role
 
-app = Flask(__name__)
-
-bootstrap = Bootstrap(app)
-
-
-@app.errorhandler(404)
-def page_not_found(e):
-    return render_template('404.html'), 404
-
-
-@app.errorhandler(500)
-def internal_server_error(e):
-    return render_template('500.html'), 500
+app = create_app(os.getenv('FLASK_CONFIG') or 'default')
+migrate = Migrate(app, db)
 
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+
+@app.shell_context_processor
+def make_shell_context():
+    return dict(db=db, User=User, Role=Role)
 
 
-@app.route('/user/<name>')
-def user(name):
-    return render_template('user.html', name=name)
+@app.cli.command()
+@click.argument('test_names', nargs=-1)
+def test(test_names):
+    """Run the unit tests."""
+    import unittest
+    if test_names:
+        tests = unittest.TestLoader().loadTestsFromNames(test_names)
+    else:
+        tests = unittest.TestLoader().discover('tests')
+    unittest.TextTestRunner(verbosity=2).run(tests)
 
-if __name__ == ("__main__"):
+    
+if __name__ == '__main__':
     app.run(debug=True)
