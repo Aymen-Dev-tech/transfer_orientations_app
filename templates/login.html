@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Se conncecter</title>
+        <link href="static/styles.css" rel="stylesheet" />
+        <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
+    </head>
+    <body class="bg-primary">
+        <div id="layoutAuthentication">
+            <div id="layoutAuthentication_content">
+                <main>
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-5">
+                                <div class="card shadow-lg border-0 rounded-lg mt-5">
+                                    <div class="card-header text-center">
+                                        <h3 class="text-center font-weight-light my-4">
+                                            Se conncecter
+                                        </h3>
+                                        <span class="text-center">
+                                            <!--  if msg 
+                                                 msg | safe 
+                                             else 
+                                                Add your credentials
+                                             endif   -->
+                                        </span>                            
+                                    </div>
+                                    <div class="card-body">
+                                        
+                                        <form role="form" method="get" action="/admin">
+            
+                                            <!-- { form.hidden_tag() } -->
+            
+                                            <div class="form-group">
+                                                <label class="small mb-1" for="username">Email</label>
+                                                <!-- { form.username(placeholder="Username", class="form-control") } -->
+                                                <input class="form-control" id="inputEmail" type="email" placeholder="name@example.com" />
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="small mb-1" for="inputPassword">Mot de passe</label>
+                                                <!-- { form.password(placeholder="Password", class="form-control", type="password") } -->
+                                                <input class="form-control" id="inputPassword" type="password" placeholder="Password" />
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="custom-control custom-checkbox">
+                                                    <input class="custom-control-input" id="rememberPasswordCheck" type="checkbox" />
+                                                    <label class="custom-control-label" for="rememberPasswordCheck">Remember password</label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
+                                                <button type="submit" name="login" class="btn btn-primary">Se conncecter</button>
+                                                <div class="small">
+                                                    <!-- <a href="{ url_for('authentication_blueprint.register') }">Register</a></div> -->
+                                                    <a href=#>mot de pass oublier?</a>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="card-footer text-center">
+                                        <div class="small">
+                                            Transfer / orientations App 2022
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+        <script src="{{url_for('static',filename='scripts.js')}}"></script>
+    </body>
+</html>
