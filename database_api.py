@@ -2,7 +2,7 @@ import sqlite3
 from sqlite3 import Error
 
 #change this path corresponding to where the db file is at
-absolute_db_path = 'D:/Projects/transfer_management_app/transfer_orientations_app/'
+absolute_db_path = 'D:/Projects/transfer_app/'
 database = absolute_db_path+'app_data.db'
 con = sqlite3.connect(database)
 cursor = con.cursor()
@@ -102,7 +102,7 @@ def adminSignUp(email:str, password:str, nom:str, prenom:str, telephone:str, id_
 #orientation_deadline(id autoInc,id_fac,start,finish)
 def addOrientationDeadline(id_fac:int,start:str,finish:str):
     try:
-        cursor.execute('insert into orientation_deadline (id_fac,start,finish) values (?,?,?)',(id_fac,start,finish))
+        cursor.execute('insert into orientation_deadline values (?,?,?,?)',(id_fac+1,id_fac,start,finish))
     except Error as e:
         print(e)
         print('orientation deadline already added !')
@@ -144,7 +144,7 @@ def getOrientationDeadline(id_fac:int):
     else:
         res = cursor.fetchone()
         if res != None:
-            deadline = {'id':res[0],'start':res[1],'finish':res[2]}
+            deadline = {'id':res[0],'id_fac':res[1],'start':res[2],'finish':res[3]}
             return deadline
     return None
 
@@ -154,8 +154,8 @@ def getAllOrientationDeadlines():
 #transfer_deadline(id autoInc,id_fac,start,finish)
 def addTransferDeadline(id_fac:int,start:str,finish:str):
     try:
-        cursor.execute('insert into transfer_deadline (id_fac,start,finish) values (?,?,?)',
-        (id_fac,start,finish))
+        cursor.execute('insert into transfer_deadline values (?,?,?,?)',
+        (id_fac+1,id_fac,start,finish))
     except Error as e:
         print(e)
         print('transfer deadline already added !')
@@ -198,7 +198,7 @@ def getTransferDeadline(id_fac:int):
     else:
         res = cursor.fetchone()
         if res != None:
-            deadline = {'id':res[0],'start':res[1],'finish':res[2]}
+            deadline = {'id':res[0],'id_fac':res[1],'start':res[2],'finish':res[3]}
             return deadline
     return None
 
@@ -211,7 +211,7 @@ def getAllTransferDeadlines():
 #conge academic 1 or 0 : if he has conge academic 1 else 0
 #choix references id of specialite
 def addTransferRequest(matricule:int, id_transfer:int, moyen_bac:float, filiere_bac:str, niveau_etude:str,
-date_premier_insc:str, formation:str, univ_origin:str, conge_academic:int, etat:str, choix1:str, choix2:str, choix3:str, choix4:str):
+date_premier_insc:str, formation:str, univ_origin:str, conge_academic:int, etat:str, choix1:int, choix2:int, choix3:int, choix4:int):
     
     try:
         cursor.execute('insert into transfer values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)',(matricule,id_transfer,
@@ -226,7 +226,7 @@ date_premier_insc:str, formation:str, univ_origin:str, conge_academic:int, etat:
         return 'ok'
     
 
-def updateTransferRequest(matricule:int, choix1:str, choix2:str, choix3:str, choix4:str,):
+def updateTransferRequest(matricule:int, choix1:int, choix2:int, choix3:int, choix4:int):
     
     try:
         cursor.execute('update transfer set choix1=:choix1 ,choix2=:choix2 ,choix3=:choix3 ,choix4=:choix4 where matricule=:matricule',
@@ -245,7 +245,7 @@ def updateTransferRequest(matricule:int, choix1:str, choix2:str, choix3:str, cho
 
 def deleteTransferRequest(matricule:int):
     try:
-        cursor.execute('delte from transfer where matricule=:matricule',{'matricule':matricule})
+        cursor.execute('delete from transfer where matricule=:matricule',{'matricule':matricule})
     except Exception as e:
         print(e)
         return None
@@ -312,7 +312,7 @@ def getSpecialites(id_fac:int):
 def updateTransferPlaces(id_specialite:int, nbr_places:int):
     return
 
-def updateOrientaionPlaces(id_specialite:int, nbr_places:int):
+def updateOrientationPlaces(id_specialite:int, nbr_places:int):
     return
 
 #   faculte(id autoInc,name)
