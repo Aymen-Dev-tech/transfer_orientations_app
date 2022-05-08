@@ -273,7 +273,12 @@ def getTransferRequest(matricule:int):
         print(e)
         return None
     else:
-        return
+        res = cursor.fetchone()
+        transferRequest = {
+            'matricule':res[0],
+            'transfer_id':res[1]
+        }
+        return res
     
     
 def getTransferRequests(id_transfer:int):
@@ -322,3 +327,6 @@ def getFaculties():
 
 def getDepartements(id_fac:int):
     return
+
+print(getTransferRequest(1818))
+closeConnection()
