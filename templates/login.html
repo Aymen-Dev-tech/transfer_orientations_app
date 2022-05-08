@@ -32,19 +32,19 @@
                                     </div>
                                     <div class="card-body">
                                         
-                                        <form role="form" method="get" action="/admin">
+                                        <form role="form" method="post" action="{{ url_for('index') }}">
             
                                             <!-- { form.hidden_tag() } -->
             
                                             <div class="form-group">
                                                 <label class="small mb-1" for="username">Email</label>
                                                 <!-- { form.username(placeholder="Username", class="form-control") } -->
-                                                <input class="form-control" id="inputEmail" type="email" placeholder="name@example.com" />
+                                                <input class="form-control" id="inputEmail" type="email" name="email" placeholder="name@example.com" />
                                             </div>
                                             <div class="form-group">
                                                 <label class="small mb-1" for="inputPassword">Mot de passe</label>
                                                 <!-- { form.password(placeholder="Password", class="form-control", type="password") } -->
-                                                <input class="form-control" id="inputPassword" type="password" placeholder="Password" />
+                                                <input class="form-control" id="inputPassword" type="password" name="password" placeholder="Password" />
                                             </div>
                                             <div class="form-group">
                                                 <div class="custom-control custom-checkbox">
@@ -56,6 +56,7 @@
                                                 <button type="submit" name="login" class="btn btn-primary">Se conncecter</button>
                                                 <div class="small">
                                                     <!-- <a href="{ url_for('authentication_blueprint.register') }">Register</a></div> -->
+                                                    <!-- create view function with password resating templates -->
                                                     <a href=#>mot de pass oublier?</a>
                                             </div>
                                         </form>

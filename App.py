@@ -1,6 +1,7 @@
-from flask import Flask, render_template
+from crypt import methods
+from flask import Flask, render_template, redirect, request, url_for
 from flask_bootstrap import Bootstrap
-
+import database_api as db
 app = Flask(__name__)
 
 bootstrap = Bootstrap(app)
@@ -16,8 +17,21 @@ def internal_server_error(e):
     return render_template('admin/500.html'), 500
 
 
-@app.route('/')
+@app.route('/', methods = ["POST", "GET"])
 def index():
+    #get info from the form 
+    if request.method == "POST":
+        email = request.form["email"]
+        password = request.form["password"]
+        #fetch from db
+        if password == "admin":
+            if db.adminLogIn(email, password) != None:
+                return redirect(url_for('index_admin'))  
+            else:
+                return render_template('login.html')
+        else:
+            #Student dashboard
+            pass
     return render_template('login.html')
 
 
@@ -26,7 +40,7 @@ def login():
     return render_template('login.html')
 
 
-@app.route('/admin')
+@app.route('/admin', methods = ["POST", "GET"])
 def index_admin():
     return render_template('admin/index.html')
 
@@ -44,11 +58,6 @@ def transferInterneDetails(id_transfer):
 @app.route('/admin/profile')
 def profile():
     return render_template('admin/profile.html')
-
-
-@app.route('/user/<name>')
-def user(name):
-    return render_template('admin/user.html', name=name)
 
 if __name__ == ("__main__"):
     app.run(debug=True)

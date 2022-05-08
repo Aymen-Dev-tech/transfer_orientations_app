@@ -2,15 +2,14 @@ import sqlite3
 from sqlite3 import Error
 
 #change this path corresponding to where the db file is at
-absolute_db_path = 'D:/Projects/transfer_management_app/transfer_orientations_app/'
+absolute_db_path = '/home/aymen/DEV/TpEdl/'
 database = absolute_db_path+'app_data.db'
-con = sqlite3.connect(database)
+con = sqlite3.connect(database, check_same_thread=False)
 cursor = con.cursor()
-
 READY = "ready"
 SUSPENDED = "suspended"
 REJECTED = "rejected"
-ACCEPTED = "accepted"
+ACCEPTED = "accepted" 
 
 def closeConnection():
     print("closing connection...")
@@ -322,3 +321,6 @@ def getFaculties():
 
 def getDepartements(id_fac:int):
     return
+
+if __name__ == "__main__":
+    print(adminLogIn("admin@gmail.com", "admin"))
