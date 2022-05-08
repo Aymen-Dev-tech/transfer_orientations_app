@@ -99,34 +99,34 @@ def adminSignUp(email:str, password:str, nom:str, prenom:str, telephone:str, id_
 
 
 
-#orientation_deadline(id autoInc,id_fac,start,finish)
-def addOrientationDeadline(id_fac:int,start:str,finish:str):
+#orientation(id autoInc,id_fac,start,finish)
+def addOrientation(id_fac:int,start:str,finish:str):
     try:
-        cursor.execute('insert into orientation_deadline values (?,?,?,?)',(id_fac+1,id_fac,start,finish))
+        cursor.execute('insert into orientation values (?,?,?,?)',(id_fac+1,id_fac,start,finish))
     except Error as e:
         print(e)
-        print('orientation deadline already added !')
+        print('orientation already added !')
         return None
     else:
-        print('orientation deadline set successfelly')
+        print('orientation set successfelly')
         con.commit()
         return 'ok'
 
-def deleteOrientationDeadline(id_fac:int):
+def deleteOrientation(id_fac:int):
     try:
-        cursor.execute('delete from orientation_deadline where id_fac =:id',{"id":id_fac})
+        cursor.execute('delete from orientation where id_fac =:id',{"id":id_fac})
     except Error as e:
         print(e)
-        print('orientation deadline does not exist')
+        print('orientation does not exist')
         return None
     else:
-        print('orientation deadline deleted')
+        print('orientation deleted')
         con.commit()
         return 'ok'
 
 def updateOrientationDeadline(id_fac:int,start:str,finish:str):
     try:
-        cursor.execute('update orientation_deadline set start =:start ,finish =:finish where id_fac=:id',
+        cursor.execute('update orientation set start =:start ,finish =:finish where id_fac=:id',
         {'id':id_fac,'start':start,'finish':finish})
     except Error as e:
         print(e)
@@ -137,7 +137,7 @@ def updateOrientationDeadline(id_fac:int,start:str,finish:str):
 
 def getOrientationDeadline(id_fac:int):
     try:
-        cursor.execute('select * from orientation_deadline where id_fac=:id',{'id':id_fac})
+        cursor.execute('select * from orientation where id_fac=:id',{'id':id_fac})
     except Error as e:
         print(e)
         return None
@@ -148,38 +148,38 @@ def getOrientationDeadline(id_fac:int):
             return deadline
     return None
 
-def getAllOrientationDeadlines():
+def getAllOrientations():
     return
 
-#transfer_deadline(id autoInc,id_fac,start,finish)
-def addTransferDeadline(id_fac:int,start:str,finish:str):
+#transfer(id autoInc,id_fac,start,finish)
+def addTransfer(id_fac:int,start:str,finish:str):
     try:
-        cursor.execute('insert into transfer_deadline values (?,?,?,?)',
+        cursor.execute('insert into transfer values (?,?,?,?)',
         (id_fac+1,id_fac,start,finish))
     except Error as e:
         print(e)
-        print('transfer deadline already added !')
+        print('transfer already added !')
         return None
     else:
-        print('transfer deadline set successfelly')
+        print('transfer set successfelly')
         con.commit()
         return 'ok'
 
-def deleteTransferDeadline(id_fac:int):
+def deleteTransfer(id_fac:int):
     try:
-        cursor.execute('delete from transfer_deadline where id_fac =:id',{"id":id_fac})
+        cursor.execute('delete from transfer where id_fac =:id',{"id":id_fac})
     except Error as e:
         print(e)
-        print('transfer deadline does not exist')
+        print('transfer does not exist')
         return None
     else:
-        print('transfer deadline deleted')
+        print('transfer deleted')
         con.commit()
         return 'ok'
 
 def updateTransferDeadline(id_fac:int,start:str,finish:str):
     try:
-        cursor.execute('update transfer_deadline set start =:start ,finish =:finish where id_fac=:id',
+        cursor.execute('update transfer set start =:start ,finish =:finish where id_fac=:id',
         {'id':id_fac,'start':start,'finish':finish})
     except Error as e:
         print(e)
@@ -191,7 +191,7 @@ def updateTransferDeadline(id_fac:int,start:str,finish:str):
 
 def getTransferDeadline(id_fac:int):
     try:
-        cursor.execute('select * from transfer_deadline where id_fac =:id',{'id':id_fac})
+        cursor.execute('select * from transfer where id_fac =:id',{'id':id_fac})
     except Error as e:
         print(e)
         return None
@@ -202,19 +202,19 @@ def getTransferDeadline(id_fac:int):
             return deadline
     return None
 
-def getAllTransferDeadlines():
+def getAllTransfers():
     return
 
 
 
-#transfer(matricule,id_transfer,moyen_bac,filiere_bac,niveau-etude,date_premier_insc,formation,univ_origin,conge_academic,etat,choix1...)
+#transfer_request(matricule,id_transfer,moyen_bac,filiere_bac,niveau-etude,date_premier_insc,formation,univ_origin,conge_academic,etat,choix1...)
 #conge academic 1 or 0 : if he has conge academic 1 else 0
 #choix references id of specialite
 def addTransferRequest(matricule:int, id_transfer:int, moyen_bac:float, filiere_bac:str, niveau_etude:str,
 date_premier_insc:str, formation:str, univ_origin:str, conge_academic:int, etat:str, choix1:int, choix2:int, choix3:int, choix4:int):
     
     try:
-        cursor.execute('insert into transfer values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)',(matricule,id_transfer,
+        cursor.execute('insert into transfer_request values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)',(matricule,id_transfer,
         moyen_bac,filiere_bac,niveau_etude,date_premier_insc,formation,univ_origin,conge_academic,etat,choix1,
         choix2,choix3,choix4))
     except Exception as e:
@@ -229,7 +229,7 @@ date_premier_insc:str, formation:str, univ_origin:str, conge_academic:int, etat:
 def updateTransferRequest(matricule:int, choix1:int, choix2:int, choix3:int, choix4:int):
     
     try:
-        cursor.execute('update transfer set choix1=:choix1 ,choix2=:choix2 ,choix3=:choix3 ,choix4=:choix4 where matricule=:matricule',
+        cursor.execute('update transfer_request set choix1=:choix1 ,choix2=:choix2 ,choix3=:choix3 ,choix4=:choix4 where matricule=:matricule',
         {'matricule':matricule,
         'choix1':choix1,
         'choix2':choix2,
@@ -245,7 +245,7 @@ def updateTransferRequest(matricule:int, choix1:int, choix2:int, choix3:int, cho
 
 def deleteTransferRequest(matricule:int):
     try:
-        cursor.execute('delete from transfer where matricule=:matricule',{'matricule':matricule})
+        cursor.execute('delete from transfer_request where matricule=:matricule',{'matricule':matricule})
     except Exception as e:
         print(e)
         return None
@@ -257,7 +257,7 @@ def deleteTransferRequest(matricule:int):
 
 def setTransferRequestState(matricule:int, etat:str):
     try:
-        cursor.execute('update transfer set etat=:etat where matricule=:matricule',{'matricule':matricule,'etat':etat})
+        cursor.execute('update transfer_request set etat=:etat where matricule=:matricule',{'matricule':matricule,'etat':etat})
     except Error as e:
         print(e)
         return None
@@ -268,7 +268,7 @@ def setTransferRequestState(matricule:int, etat:str):
 
 def getTransferRequest(matricule:int):
     try:
-        cursor.execute('select * from transfer where matricule=:matricule',{'matricule':matricule})
+        cursor.execute('select * from transfer_request where matricule=:matricule',{'matricule':matricule})
     except Error as e:
         print(e)
         return None
@@ -327,6 +327,3 @@ def getFaculties():
 
 def getDepartements(id_fac:int):
     return
-
-print(getTransferRequest(1818))
-closeConnection()
