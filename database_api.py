@@ -381,16 +381,57 @@ def getAllTransferRequests(id_transfer:int):
 #condition(id autoInc,id_fac , cond, type)
 #type should be INTERN, EXTERN or ORIENTATION
 def addCondition(id_fac:int,type:str, condition:str):
-    return
+    try:
+        cursor.execute("insert into condition (id_fac,cond,type) values (?,?,?)",(id_fac,condition,type))
+    except Error as e:
+        print(e)
+        return None
+    else :
+        con.commit()
+        print('condition added !')
+        return 'ok'
+
 
 def deleteCondition(id:int):
-    return
+    try:
+        cursor.execute("delete from condition where id=:id",{'id':id})
+    except Error as e:
+        print(e)
+        return None
+    else :
+        con.commit()
+        print('condition deleted !')
+        return 'ok'
 
 def updateCondition(id:int,condition:str):
-    return
+    try:
+        cursor.execute("update condition set cond=:condition where id=:id",{'id':id,'condition':condition})
+    except Error as e:
+        print(e)
+        return None
+    else:
+        con.commit()
+        print("condition updated")
+        return 'ok'
 
-def selectConditions(id_fac:int,type:str):
-    return
+def getConditions(id_fac:int,type:str):
+    try:
+        cursor.execute("select * from condition where id_fac=:id and type=:type",{'id':id_fac,'type':type})
+    except Error as e:
+        print(e)
+        return None
+    else:
+        conditions =[]
+        res = cursor.fetchall()
+        for cond in res:
+            c = {
+                'id':cond[0],
+                'id_fac':cond[1],
+                'cond':cond[2],
+                'type':cond[3]
+            }
+            conditions.append(c)
+        return conditions
 
 
 
@@ -436,4 +477,5 @@ if __name__ == "__main__":
 #studentPasswordReset("mohamed@gmail.com","mohamed3","mohamed4")
 #print(studentLogIn("mohamed@gmail.com","mohamed3"))
 #adminPasswordReset("admin@gmail.com","admin2","admin")
+
 closeConnection()
