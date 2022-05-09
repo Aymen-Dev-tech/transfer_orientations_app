@@ -2,8 +2,10 @@ import sqlite3
 from sqlite3 import Error
 
 #change this path corresponding to where the db file is at
-absolute_db_path = 'D:/Projects/transfer_app/'
-database = absolute_db_path+'app_data.db'
+#absolute_db_path = 'D:/Projects/transfer_app/'
+#absolute_db_path = '/home/aymen/DEV/TpEdl'
+#database = absolute_db_path+'app_data.db'
+database = "/home/aymen/DEV/TpEdl/app_data.db"
 con = sqlite3.connect(database, check_same_thread=False)
 cursor = con.cursor()
 READY = "ready"
@@ -206,6 +208,8 @@ def getAllTransfers():
 
 
 
+
+
 #transfer_request(matricule,id_transfer,moyen_bac,filiere_bac,niveau-etude,date_premier_insc,formation,univ_origin,conge_academic,etat,choix1...)
 #conge academic 1 or 0 : if he has conge academic 1 else 0
 #choix references id of specialite
@@ -265,25 +269,39 @@ def setTransferRequestState(matricule:int, etat:str):
         print('transfer request state updated')
         return 'ok'
 
-def getTransferRequest(matricule:int):
+def getTransferRequest(id_transfer:int):
     try:
-        cursor.execute('select * from transfer_request where matricule=:matricule',{'matricule':matricule})
+        cursor.execute('select * from transfer_request where id_transfer=:id_transfer',{'id_transfer':id_transfer})
     except Error as e:
         print(e)
         return None
     else:
         res = cursor.fetchone()
-        transferRequest = {
-            'matricule':res[0],
-            'transfer_id':res[1]
-        }
         return res
+
     
     
-def getTransferRequests(id_transfer:int):
-    return
+"""def getTransferRequest(id_transfer:int):
+    return"""
 
-
+def getTransferRequests():
+    try:
+        cursor.execute('select * from transfer_request')
+    except Error as e:
+        print(e)
+        return None
+    else:
+        res = cursor.fetchall()
+        return res
+def getStudentInfo(matricule):
+    try:
+        cursor.execute('select * from etudiant where matricule=:matricule',{'matricule':matricule})
+    except Error as e:
+        print(e)
+        return None
+    else:
+        res = cursor.fetchone()
+        return res
 #condition(id autoInc,id_fac , cond, type)
 #type should be INTERN, EXTERN or ORIENTATION
 def addCondition(id_fac:int,type:str, condition:str):
@@ -328,4 +346,4 @@ def getDepartements(id_fac:int):
     return
 
 if __name__ == "__main__":
-    print(adminLogIn("admin@gmail.com", "admin"))
+    print(getTransferRequest(1))
