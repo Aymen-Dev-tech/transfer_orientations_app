@@ -2,8 +2,10 @@ import sqlite3
 from sqlite3 import Error
 
 #change this path corresponding to where the db file is at
+
 # absolute_db_path = '/home/aymen/DEV/TpEdl/'
 absolute_db_path = 'C:/Users/pc-car/Desktop/project/transfer_orientations_app'
+# absolute_db_path = 'D:/Projects/transfer_app/'
 database = absolute_db_path+'app_data.db'
 con = sqlite3.connect(database, check_same_thread=False)
 cursor = con.cursor()
@@ -11,6 +13,11 @@ READY = "ready"
 SUSPENDED = "suspended"
 REJECTED = "rejected"
 ACCEPTED = "accepted" 
+
+#condition types
+INTERN = "intern"
+EXTERN = "extern"
+ORIENTATION = "orientation"
 
 def closeConnection():
     print("closing connection...")
@@ -62,6 +69,24 @@ def studentSignUp(matricule:int, email:str, password:str, nom:str, prenom:str, t
         con.commit()
         return 'ok'
     
+def studentPasswordReset(email:str, oldPass:str, newPass:str):
+    res =studentLogIn(email,oldPass)
+    if(res != None):
+        try:
+            cursor.execute("update etudiant set password=:newPass where email=:email and password=:oldPass",
+            {'email':email,
+            'oldPass':oldPass,
+            'newPass':newPass})
+        except Error as e:
+            print(e)
+            return None
+        else:
+            print('password reset success')
+            con.commit()
+            return 'ok'
+    else:
+        print('wrong password or email')
+        return None
 
 
 #admin(email,password,telephone,nom,prenom,id_dep,id_fac)
@@ -97,36 +122,54 @@ def adminSignUp(email:str, password:str, nom:str, prenom:str, telephone:str, id_
         con.commit()
         return 'ok'
 
+def adminPasswordReset(email:str, oldPass:str, newPass:str):
+    res =adminLogIn(email,oldPass)
+    if(res != None):
+        try:
+            cursor.execute("update admin set password=:newPass where email=:email and password=:oldPass",
+            {'email':email,
+            'oldPass':oldPass,
+            'newPass':newPass})
+        except Error as e:
+            print(e)
+            return None
+        else:
+            print('password reset success')
+            con.commit()
+            return 'ok'
+    else:
+        print('wrong password or email')
+        return None
 
 
-#orientation_deadline(id autoInc,id_fac,start,finish)
-def addOrientationDeadline(id_fac:int,start:str,finish:str):
+#orientation(id autoInc,id_fac,start,finish)
+def addOrientation(id_fac:int,start:str,finish:str):
     try:
-        cursor.execute('insert into orientation_deadline (id_fac,start,finish) values (?,?,?)',(id_fac,start,finish))
+        cursor.execute('insert into orientation values (?,?,?,?)',(id_fac+1,id_fac,start,finish))
     except Error as e:
         print(e)
-        print('orientation deadline already added !')
+        print('orientation already added !')
         return None
     else:
-        print('orientation deadline set successfelly')
+        print('orientation set successfelly')
         con.commit()
         return 'ok'
 
-def deleteOrientationDeadline(id_fac:int):
+def deleteOrientation(id_fac:int):
     try:
-        cursor.execute('delete from orientation_deadline where id_fac =:id',{"id":id_fac})
+        cursor.execute('delete from orientation where id_fac =:id',{"id":id_fac})
     except Error as e:
         print(e)
-        print('orientation deadline does not exist')
+        print('orientation does not exist')
         return None
     else:
-        print('orientation deadline deleted')
+        print('orientation deleted')
         con.commit()
         return 'ok'
 
 def updateOrientationDeadline(id_fac:int,start:str,finish:str):
     try:
-        cursor.execute('update orientation_deadline set start =:start ,finish =:finish where id_fac=:id',
+        cursor.execute('update orientation set start =:start ,finish =:finish where id_fac=:id',
         {'id':id_fac,'start':start,'finish':finish})
     except Error as e:
         print(e)
@@ -137,49 +180,49 @@ def updateOrientationDeadline(id_fac:int,start:str,finish:str):
 
 def getOrientationDeadline(id_fac:int):
     try:
-        cursor.execute('select * from orientation_deadline where id_fac=:id',{'id':id_fac})
+        cursor.execute('select * from orientation where id_fac=:id',{'id':id_fac})
     except Error as e:
         print(e)
         return None
     else:
         res = cursor.fetchone()
         if res != None:
-            deadline = {'id':res[0],'start':res[1],'finish':res[2]}
+            deadline = {'id':res[0],'id_fac':res[1],'start':res[2],'finish':res[3]}
             return deadline
     return None
 
-def getAllOrientationDeadlines():
+def getAllOrientations():
     return
 
-#transfer_deadline(id autoInc,id_fac,start,finish)
-def addTransferDeadline(id_fac:int,start:str,finish:str):
+#transfer(id autoInc,id_fac,start,finish)
+def addTransfer(id_fac:int,start:str,finish:str):
     try:
-        cursor.execute('insert into transfer_deadline (id_fac,start,finish) values (?,?,?)',
-        (id_fac,start,finish))
+        cursor.execute('insert into transfer values (?,?,?,?)',
+        (id_fac+1,id_fac,start,finish))
     except Error as e:
         print(e)
-        print('transfer deadline already added !')
+        print('transfer already added !')
         return None
     else:
-        print('transfer deadline set successfelly')
+        print('transfer set successfelly')
         con.commit()
         return 'ok'
 
-def deleteTransferDeadline(id_fac:int):
+def deleteTransfer(id_fac:int):
     try:
-        cursor.execute('delete from transfer_deadline where id_fac =:id',{"id":id_fac})
+        cursor.execute('delete from transfer where id_fac =:id',{"id":id_fac})
     except Error as e:
         print(e)
-        print('transfer deadline does not exist')
+        print('transfer does not exist')
         return None
     else:
-        print('transfer deadline deleted')
+        print('transfer deleted')
         con.commit()
         return 'ok'
 
 def updateTransferDeadline(id_fac:int,start:str,finish:str):
     try:
-        cursor.execute('update transfer_deadline set start =:start ,finish =:finish where id_fac=:id',
+        cursor.execute('update transfer set start =:start ,finish =:finish where id_fac=:id',
         {'id':id_fac,'start':start,'finish':finish})
     except Error as e:
         print(e)
@@ -191,30 +234,45 @@ def updateTransferDeadline(id_fac:int,start:str,finish:str):
 
 def getTransferDeadline(id_fac:int):
     try:
-        cursor.execute('select * from transfer_deadline where id_fac =:id',{'id':id_fac})
+        cursor.execute('select * from transfer where id_fac =:id',{'id':id_fac})
     except Error as e:
         print(e)
         return None
     else:
         res = cursor.fetchone()
         if res != None:
-            deadline = {'id':res[0],'start':res[1],'finish':res[2]}
+            deadline = {'id':res[0],'id_fac':res[1],'start':res[2],'finish':res[3]}
             return deadline
     return None
 
-def getAllTransferDeadlines():
-    return
+def getAllTransfers():
+    try:
+        cursor.execute("select * from transfer")
+    except Error as e:
+        print(e)
+        return None
+    else:
+        res = cursor.fetchall()
+        transfers = []
+        for transfer in res:
+            t = {'id':transfer[0],
+            'id_fac':transfer[1],
+            'start':transfer[2],
+            'finish':transfer[3]}
+            transfers.append(t)
+        return transfers
 
 
 
-#transfer(matricule,id_transfer,moyen_bac,filiere_bac,niveau-etude,date_premier_insc,formation,univ_origin,conge_academic,etat,choix1...)
+#transfer_request(matricule,id_transfer,moyen_bac,filiere_bac,niveau-etude,date_premier_insc,
+# formation, univ_origin,conge_academic,etat,choix1...)
 #conge academic 1 or 0 : if he has conge academic 1 else 0
 #choix references id of specialite
 def addTransferRequest(matricule:int, id_transfer:int, moyen_bac:float, filiere_bac:str, niveau_etude:str,
-date_premier_insc:str, formation:str, univ_origin:str, conge_academic:int, etat:str, choix1:str, choix2:str, choix3:str, choix4:str):
+date_premier_insc:str, formation:str, univ_origin:str, conge_academic:int, etat:str, choix1:int, choix2:int, choix3:int, choix4:int):
     
     try:
-        cursor.execute('insert into transfer values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)',(matricule,id_transfer,
+        cursor.execute('insert into transfer_request values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)',(matricule,id_transfer,
         moyen_bac,filiere_bac,niveau_etude,date_premier_insc,formation,univ_origin,conge_academic,etat,choix1,
         choix2,choix3,choix4))
     except Exception as e:
@@ -226,10 +284,10 @@ date_premier_insc:str, formation:str, univ_origin:str, conge_academic:int, etat:
         return 'ok'
     
 
-def updateTransferRequest(matricule:int, choix1:str, choix2:str, choix3:str, choix4:str,):
+def updateTransferRequest(matricule:int, choix1:int, choix2:int, choix3:int, choix4:int):
     
     try:
-        cursor.execute('update transfer set choix1=:choix1 ,choix2=:choix2 ,choix3=:choix3 ,choix4=:choix4 where matricule=:matricule',
+        cursor.execute('update transfer_request set choix1=:choix1 ,choix2=:choix2 ,choix3=:choix3 ,choix4=:choix4 where matricule=:matricule',
         {'matricule':matricule,
         'choix1':choix1,
         'choix2':choix2,
@@ -245,7 +303,7 @@ def updateTransferRequest(matricule:int, choix1:str, choix2:str, choix3:str, cho
 
 def deleteTransferRequest(matricule:int):
     try:
-        cursor.execute('delte from transfer where matricule=:matricule',{'matricule':matricule})
+        cursor.execute('delete from transfer_request where matricule=:matricule',{'matricule':matricule})
     except Exception as e:
         print(e)
         return None
@@ -257,7 +315,7 @@ def deleteTransferRequest(matricule:int):
 
 def setTransferRequestState(matricule:int, etat:str):
     try:
-        cursor.execute('update transfer set etat=:etat where matricule=:matricule',{'matricule':matricule,'etat':etat})
+        cursor.execute('update transfer_request set etat=:etat where matricule=:matricule',{'matricule':matricule,'etat':etat})
     except Error as e:
         print(e)
         return None
@@ -268,31 +326,115 @@ def setTransferRequestState(matricule:int, etat:str):
 
 def getTransferRequest(matricule:int):
     try:
-        cursor.execute('select * from transfer where matricule=:matricule',{'matricule':matricule})
+        cursor.execute('select * from transfer_request where matricule=:matricule',{'matricule':matricule})
     except Error as e:
         print(e)
         return None
     else:
-        return
+        res = cursor.fetchone()
+        transferRequest = {
+            'matricule':res[0],
+            'transfer_id':res[1],
+            'moyen_bac':res[2],
+            'filiere_bac':res[3],
+            'niveau_etude':res[4],
+            'date_premier_insc':res[5],
+            'formation':res[6],
+            'univ_origin':res[7],
+            'conge_academic':res[8],
+            'etat':res[9],
+            'choix1':res[10],
+            'choix2':res[11],
+            'choix3':res[12],
+            'choix4':res[13],
+        }
+        return transferRequest
     
     
-def getTransferRequests(id_transfer:int):
-    return
+def getAllTransferRequests(id_transfer:int):
+    try:
+        cursor.execute('select * from transfer_request where id_transfer=:id_transfer',{'id_transfer':id_transfer})
+    except Error as e:
+        print(e)
+        return None
+    else:
+        res = cursor.fetchall()
+        transfer_requests = []
+        for tran_req in res:
+            transferRequest = {
+            'matricule':tran_req[0],
+            'transfer_id':tran_req[1],
+            'moyen_bac':tran_req[2],
+            'filiere_bac':tran_req[3],
+            'niveau_etude':tran_req[4],
+            'date_premier_insc':tran_req[5],
+            'formation':tran_req[6],
+            'univ_origin':tran_req[7],
+            'conge_academic':tran_req[8],
+            'etat':tran_req[9],
+            'choix1':tran_req[10],
+            'choix2':tran_req[11],
+            'choix3':tran_req[12],
+            'choix4':tran_req[13],
+        }
+            transfer_requests.append(transferRequest)
+        return transfer_requests
 
 
 #condition(id autoInc,id_fac , cond, type)
 #type should be INTERN, EXTERN or ORIENTATION
 def addCondition(id_fac:int,type:str, condition:str):
-    return
+    try:
+        cursor.execute("insert into condition (id_fac,cond,type) values (?,?,?)",(id_fac,condition,type))
+    except Error as e:
+        print(e)
+        return None
+    else :
+        con.commit()
+        print('condition added !')
+        return 'ok'
+
 
 def deleteCondition(id:int):
-    return
+    try:
+        cursor.execute("delete from condition where id=:id",{'id':id})
+    except Error as e:
+        print(e)
+        return None
+    else :
+        con.commit()
+        print('condition deleted !')
+        return 'ok'
 
 def updateCondition(id:int,condition:str):
-    return
+    try:
+        cursor.execute("update condition set cond=:condition where id=:id",{'id':id,'condition':condition})
+    except Error as e:
+        print(e)
+        return None
+    else:
+        con.commit()
+        print("condition updated")
+        return 'ok'
 
-def selectConditions(id_fac:int,type:str):
-    return
+def getConditions(id_fac:int,type:str):
+    try:
+        cursor.execute("select * from condition where id_fac=:id and type=:type",{'id':id_fac,'type':type})
+    except Error as e:
+        print(e)
+        return None
+    else:
+        conditions =[]
+        res = cursor.fetchall()
+        for cond in res:
+            c = {
+                'id':cond[0],
+                'id_fac':cond[1],
+                'cond':cond[2],
+                'type':cond[3]
+            }
+            conditions.append(c)
+        return conditions
 
 
 
@@ -312,7 +454,7 @@ def getSpecialites(id_fac:int):
 def updateTransferPlaces(id_specialite:int, nbr_places:int):
     return
 
-def updateOrientaionPlaces(id_specialite:int, nbr_places:int):
+def updateOrientationPlaces(id_specialite:int, nbr_places:int):
     return
 
 #   faculte(id autoInc,name)
@@ -325,3 +467,18 @@ def getDepartements(id_fac:int):
 
 if __name__ == "__main__":
     print(adminLogIn("admin@gmail.com", "admin"))
+
+
+
+
+#print(studentLogIn("mohamed@gmail.com","mohamed"))
+#addTransferRequest(1818,2,12.5,"math","l1","2018","sdf","sdf",0,SUSPENDED,1,1,1,1)
+#studentSignUp(1819,"ali@gmail.com","ali","ali","ali","05458796","male","2000")
+#addTransferRequest(1819,2,14,"sience","l1","2018","sdf","sdf",1,SUSPENDED,1,1,1,1)
+#print(getAllTransferRequests(2))
+
+#studentPasswordReset("mohamed@gmail.com","mohamed3","mohamed4")
+#print(studentLogIn("mohamed@gmail.com","mohamed3"))
+#adminPasswordReset("admin@gmail.com","admin2","admin")
+
+closeConnection()

@@ -1,10 +1,19 @@
 from flask import Flask, render_template, redirect, request, url_for
 from flask_bootstrap import Bootstrap
 import database_api as db
+from flask_mail import Mail, Message
+from threading import Thread
 app = Flask(__name__)
-
+app.config['MAIL_SERVER'] = 'smtp.googlemail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = "glm467536@gmail.com"
+app.config['MAIL_PASSWORD'] = "glm467536** *"
+app.config['FLASKY_MAIL_SUBJECT_PREFIX'] = '[transfer & orientations app]'
+app.config['FLASKY_MAIL_SENDER'] = 'transfer & orientations app Admin <glm467536@gmail.com>'
+app.config['FLASKY_ADMIN'] = "glm467536@gmail.com"
 bootstrap = Bootstrap(app)
-
+mail = Mail(app)
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -77,6 +86,32 @@ def transferInterneDetails(id_transfer):
 @app.route('/admin/profile')
 def profile():
     return render_template('admin/profile.html')
+def send_async_email(app, msg):
+    with app.app_context():
+        mail.send(msg)
+def send_email(to, subject, template, **kwargs):
+    msg = Message(app.config['FLASKY_MAIL_SUBJECT_PREFIX'] + ' ' + subject,
+                  sender=app.config['FLASKY_MAIL_SENDER'], recipients=[to])
+    msg.body = render_template(template + '.txt', **kwargs)
+    msg.html = render_template(template + '.html', **kwargs)
+    thr = Thread(target=send_async_email, args=[app, msg])
+    thr.start()
+    return thr
+@app.route('/reset', methods=['GET', 'POST'])
+def password_reset_request():
+    if request.method == "POST":
+        email = request.form["email"]
+        send_email(email, 'Reset Your Password','mail/reset_password', user=email)
+        return redirect(url_for('login'))
+    return render_template('reset_password.html')
+
+@app.route('/newPassword', methods=['GET', 'POST'])
+def newPassword():
+    if request.method == "POST":
+        newPassword = request.form["password"]
+        #call update password from the db api
+        return redirect(url_for('index_admin'))
+    return render_template('newPassword.html')
 
 if __name__ == ("__main__"):
     app.run(debug=True)
