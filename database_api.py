@@ -206,7 +206,8 @@ def getAllTransfers():
 
 
 
-#transfer_request(matricule,id_transfer,moyen_bac,filiere_bac,niveau-etude,date_premier_insc,formation,univ_origin,conge_academic,etat,choix1...)
+#transfer_request(matricule,id_transfer,moyen_bac,filiere_bac,niveau-etude,date_premier_insc,
+# formation, univ_origin,conge_academic,etat,choix1...)
 #conge academic 1 or 0 : if he has conge academic 1 else 0
 #choix references id of specialite
 def addTransferRequest(matricule:int, id_transfer:int, moyen_bac:float, filiere_bac:str, niveau_etude:str,
@@ -275,13 +276,51 @@ def getTransferRequest(matricule:int):
         res = cursor.fetchone()
         transferRequest = {
             'matricule':res[0],
-            'transfer_id':res[1]
+            'transfer_id':res[1],
+            'moyen_bac':res[2],
+            'filiere_bac':res[3],
+            'niveau_etude':res[4],
+            'date_premier_insc':res[5],
+            'formation':res[6],
+            'univ_origin':res[7],
+            'conge_academic':res[8],
+            'etat':res[9],
+            'choix1':res[10],
+            'choix2':res[11],
+            'choix3':res[12],
+            'choix4':res[13],
         }
-        return res
+        return transferRequest
     
     
-def getTransferRequests(id_transfer:int):
-    return
+def getAllTransferRequests(id_transfer:int):
+    try:
+        cursor.execute('select * from transfer_request where id_transfer=:id_transfer',{'id_transfer':id_transfer})
+    except Error as e:
+        print(e)
+        return None
+    else:
+        res = cursor.fetchall()
+        transfer_requests = []
+        for tran_req in res:
+            transferRequest = {
+            'matricule':tran_req[0],
+            'transfer_id':tran_req[1],
+            'moyen_bac':tran_req[2],
+            'filiere_bac':tran_req[3],
+            'niveau_etude':tran_req[4],
+            'date_premier_insc':tran_req[5],
+            'formation':tran_req[6],
+            'univ_origin':tran_req[7],
+            'conge_academic':tran_req[8],
+            'etat':tran_req[9],
+            'choix1':tran_req[10],
+            'choix2':tran_req[11],
+            'choix3':tran_req[12],
+            'choix4':tran_req[13],
+        }
+            transfer_requests.append(transferRequest)
+        return transfer_requests
 
 
 #condition(id autoInc,id_fac , cond, type)
@@ -329,3 +368,12 @@ def getDepartements(id_fac:int):
 
 if __name__ == "__main__":
     print(adminLogIn("admin@gmail.com", "admin"))
+
+
+
+
+#print(studentLogIn("mohamed@gmail.com","mohamed"))
+#addTransferRequest(1818,2,12.5,"math","l1","2018","sdf","sdf",0,SUSPENDED,1,1,1,1)
+#studentSignUp(1819,"ali@gmail.com","ali","ali","ali","05458796","male","2000")
+#addTransferRequest(1819,2,14,"sience","l1","2018","sdf","sdf",1,SUSPENDED,1,1,1,1)
+#print(getAllTransferRequests(2))
