@@ -61,6 +61,24 @@ def studentSignUp(matricule:int, email:str, password:str, nom:str, prenom:str, t
         con.commit()
         return 'ok'
     
+def studentPasswordReset(email:str, oldPass:str, newPass:str):
+    res =studentLogIn(email,oldPass)
+    if(res != None):
+        try:
+            cursor.execute("update etudiant set password=:newPass where email=:email and password=:oldPass",
+            {'email':email,
+            'oldPass':oldPass,
+            'newPass':newPass})
+        except Error as e:
+            print(e)
+            return None
+        else:
+            print('password reset success')
+            con.commit()
+            return 'ok'
+    else:
+        print('wrong password or email')
+        return None
 
 
 #admin(email,password,telephone,nom,prenom,id_dep,id_fac)
@@ -96,6 +114,24 @@ def adminSignUp(email:str, password:str, nom:str, prenom:str, telephone:str, id_
         con.commit()
         return 'ok'
 
+def adminPasswordReset(email:str, oldPass:str, newPass:str):
+    res =adminLogIn(email,oldPass)
+    if(res != None):
+        try:
+            cursor.execute("update admin set password=:newPass where email=:email and password=:oldPass",
+            {'email':email,
+            'oldPass':oldPass,
+            'newPass':newPass})
+        except Error as e:
+            print(e)
+            return None
+        else:
+            print('password reset success')
+            con.commit()
+            return 'ok'
+    else:
+        print('wrong password or email')
+        return None
 
 
 #orientation(id autoInc,id_fac,start,finish)
@@ -377,3 +413,8 @@ if __name__ == "__main__":
 #studentSignUp(1819,"ali@gmail.com","ali","ali","ali","05458796","male","2000")
 #addTransferRequest(1819,2,14,"sience","l1","2018","sdf","sdf",1,SUSPENDED,1,1,1,1)
 #print(getAllTransferRequests(2))
+
+#studentPasswordReset("mohamed@gmail.com","mohamed3","mohamed4")
+#print(studentLogIn("mohamed@gmail.com","mohamed3"))
+#adminPasswordReset("admin@gmail.com","admin2","admin")
+closeConnection()
