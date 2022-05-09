@@ -47,42 +47,41 @@
                         <div class="sb-sidenav-menu-heading">General</div>
                         <a class="nav-link {% if request.path == '/admin' %} active {% endif %}" href="/admin">
                             <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                            Statistiques
+                            Mes demandes
                         </a>
-                        <div class="sb-sidenav-menu-heading">Les demandes</div>
+                        <div class="sb-sidenav-menu-heading">Orientations</div>
                         <a class="nav-link collapsed {% if ('/admin/tr'or'/admin/or') in request.path %} active{% endif %}" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
                             <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
-                            Gerer les demandes
+                            Transfer
                             <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                         </a>
-                        <div class="collapse show" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                        <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                             <nav class="sb-sidenav-menu-nested nav">
-                                <a class="nav-link {% if request.path =='/admin/orientations'%} active {% endif %}" href="/admin/orientations">D'Orientations</a>
-                                <a class="nav-link {% if request.path =='/admin/transfer_interne'%} active {% endif %}" href="/admin/transfer_interne">De transfers Interne</a>
-                                <a class="nav-link {% if request.path =='/admin/transfer_interne/details'%} active {% endif %}" href="/admin/transfer_externe">De transfers Externe</a>
+                                <a class="nav-link {% if request.path =='/admin/transfer_interne'%} active {% endif %}" href="/admin/transfer_interne">Les conditions</a>
+                                <a class="nav-link {% if request.path =='/admin/transfer_interne/details'%} active {% endif %}" href="#">Ajouter un demande orinentation</a>
                             </nav>
                         </div>
-                        <div class="sb-sidenav-menu-heading">Les conditions</div>
+                        <div class="sb-sidenav-menu-heading">Transfer</div>
                         <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
                             <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
-                            Gerer les conditions
+                            Les Or
                             <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                         </a>
                         <div class="collapse" id="collapsePages" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
                             <nav class="sb-sidenav-menu-nested nav">
-                                <a class="nav-link" href="/admin/conditions">D'Orientations</a>
-                                <a class="nav-link" href="/admin/orientations">De transfer</a>
+                                <a class="nav-link" href="#">Les conditions</a>
+                                <a class="nav-link" href="#">Ajouter demande de transfers</a>
                             </nav>
                         </div>
-                        <div class="sb-sidenav-menu-heading">Others</div>
+                        <div class="sb-sidenav-menu-heading">Additional</div>
                         <a class="nav-link" href="#">
                             <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
-                            Parameters
+                            Notifications
                         </a>
                     </div>
                 </div>
-                <div class="sb-sidenav-footer bg-primary">
-                    <div class="small">Connecté en tq <b>administrateur</b></div>
+                <div class="sb-sidenav-footer bg-success">
+                    <div class="small">Connecté en TQ étudiant</div>
                     <!--current_user.username-->
                 </div>
             </nav>

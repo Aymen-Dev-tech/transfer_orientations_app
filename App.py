@@ -1,4 +1,3 @@
-from crypt import methods
 from flask import Flask, render_template, redirect, request, url_for
 from flask_bootstrap import Bootstrap
 import database_api as db
@@ -48,6 +47,26 @@ def index_admin():
 @app.route('/admin/transfer_interne')
 def transferInterne():
     return render_template('admin/transfer_interne.html')
+
+
+@app.route('/admin/transfer_externe')
+def transferExterne():
+    return render_template('admin/transfer_externe.html')
+
+
+@app.route('/admin/orientations')
+def orientations():
+    return render_template('admin/orientations.html')
+
+
+@app.route('/admin/conditions')
+def conditions():
+    return render_template('admin/conditions_orientation.html')
+
+
+@app.route('/admin/parametres')
+def parametres():
+    return render_template('admin/parametres.html')
 
 
 @app.route('/admin/demande_details/<id_transfer>')
