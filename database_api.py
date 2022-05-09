@@ -11,6 +11,11 @@ SUSPENDED = "suspended"
 REJECTED = "rejected"
 ACCEPTED = "accepted" 
 
+#condition types
+INTERN = "intern"
+EXTERN = "extern"
+ORIENTATION = "orientation"
+
 def closeConnection():
     print("closing connection...")
     con.close
@@ -238,7 +243,21 @@ def getTransferDeadline(id_fac:int):
     return None
 
 def getAllTransfers():
-    return
+    try:
+        cursor.execute("select * from transfer")
+    except Error as e:
+        print(e)
+        return None
+    else:
+        res = cursor.fetchall()
+        transfers = []
+        for transfer in res:
+            t = {'id':transfer[0],
+            'id_fac':transfer[1],
+            'start':transfer[2],
+            'finish':transfer[3]}
+            transfers.append(t)
+        return transfers
 
 
 
