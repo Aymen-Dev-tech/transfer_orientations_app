@@ -121,13 +121,11 @@ def adminSignUp(email:str, password:str, nom:str, prenom:str, telephone:str, id_
         con.commit()
         return 'ok'
 
-def adminPasswordReset(email:str, oldPass:str, newPass:str):
-    res =adminLogIn(email,oldPass)
-    if(res != None):
+def adminPasswordReset(email:str, newPass:str):
+    #res =adminLogIn(email,oldPass)
         try:
-            cursor.execute("update admin set password=:newPass where email=:email and password=:oldPass",
+            cursor.execute("update admin set password=:newPass where email=:email",
             {'email':email,
-            'oldPass':oldPass,
             'newPass':newPass})
         except Error as e:
             print(e)
@@ -136,9 +134,6 @@ def adminPasswordReset(email:str, oldPass:str, newPass:str):
             print('password reset success')
             con.commit()
             return 'ok'
-    else:
-        print('wrong password or email')
-        return None
 
 
 #orientation(id autoInc,id_fac,start,finish)
@@ -500,4 +495,4 @@ if __name__ == "__main__":
 #print(studentLogIn("mohamed@gmail.com","mohamed3"))
 #adminPasswordReset("admin@gmail.com","admin2","admin")
 
-closeConnection()
+#closeConnection()

@@ -110,7 +110,8 @@ def newPassword():
     if request.method == "POST":
         newPassword = request.form["password"]
         #call update password from the db api
-        return redirect(url_for('index'))
+        db.adminPasswordReset(session.get("email"), newPassword)
+        return redirect(url_for('login'))
     return render_template('newPassword.html')
 
 if __name__ == ("__main__"):
