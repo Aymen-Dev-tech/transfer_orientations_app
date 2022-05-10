@@ -13,6 +13,11 @@ SUSPENDED = "suspended"
 REJECTED = "rejected"
 ACCEPTED = "accepted" 
 
+#condition types
+INTERN = "intern"
+EXTERN = "extern"
+ORIENTATION = "orientation"
+
 def closeConnection():
     print("closing connection...")
     con.close
@@ -63,6 +68,24 @@ def studentSignUp(matricule:int, email:str, password:str, nom:str, prenom:str, t
         con.commit()
         return 'ok'
     
+def studentPasswordReset(email:str, oldPass:str, newPass:str):
+    res =studentLogIn(email,oldPass)
+    if(res != None):
+        try:
+            cursor.execute("update etudiant set password=:newPass where email=:email and password=:oldPass",
+            {'email':email,
+            'oldPass':oldPass,
+            'newPass':newPass})
+        except Error as e:
+            print(e)
+            return None
+        else:
+            print('password reset success')
+            con.commit()
+            return 'ok'
+    else:
+        print('wrong password or email')
+        return None
 
 
 #admin(email,password,telephone,nom,prenom,id_dep,id_fac)
@@ -98,6 +121,24 @@ def adminSignUp(email:str, password:str, nom:str, prenom:str, telephone:str, id_
         con.commit()
         return 'ok'
 
+def adminPasswordReset(email:str, oldPass:str, newPass:str):
+    res =adminLogIn(email,oldPass)
+    if(res != None):
+        try:
+            cursor.execute("update admin set password=:newPass where email=:email and password=:oldPass",
+            {'email':email,
+            'oldPass':oldPass,
+            'newPass':newPass})
+        except Error as e:
+            print(e)
+            return None
+        else:
+            print('password reset success')
+            con.commit()
+            return 'ok'
+    else:
+        print('wrong password or email')
+        return None
 
 
 #orientation(id autoInc,id_fac,start,finish)
@@ -204,13 +245,26 @@ def getTransferDeadline(id_fac:int):
     return None
 
 def getAllTransfers():
-    return
+    try:
+        cursor.execute("select * from transfer")
+    except Error as e:
+        print(e)
+        return None
+    else:
+        res = cursor.fetchall()
+        transfers = []
+        for transfer in res:
+            t = {'id':transfer[0],
+            'id_fac':transfer[1],
+            'start':transfer[2],
+            'finish':transfer[3]}
+            transfers.append(t)
+        return transfers
 
 
 
-
-
-#transfer_request(matricule,id_transfer,moyen_bac,filiere_bac,niveau-etude,date_premier_insc,formation,univ_origin,conge_academic,etat,choix1...)
+#transfer_request(matricule,id_transfer,moyen_bac,filiere_bac,niveau-etude,date_premier_insc,
+# formation, univ_origin,conge_academic,etat,choix1...)
 #conge academic 1 or 0 : if he has conge academic 1 else 0
 #choix references id of specialite
 def addTransferRequest(matricule:int, id_transfer:int, moyen_bac:float, filiere_bac:str, niveau_etude:str,
@@ -277,12 +331,54 @@ def getTransferRequest(id_transfer:int):
         return None
     else:
         res = cursor.fetchone()
-        return res
+        transferRequest = {
+            'matricule':res[0],
+            'transfer_id':res[1],
+            'moyen_bac':res[2],
+            'filiere_bac':res[3],
+            'niveau_etude':res[4],
+            'date_premier_insc':res[5],
+            'formation':res[6],
+            'univ_origin':res[7],
+            'conge_academic':res[8],
+            'etat':res[9],
+            'choix1':res[10],
+            'choix2':res[11],
+            'choix3':res[12],
+            'choix4':res[13],
+        }
+        return transferRequest
+    
+    
+def getAllTransferRequests(id_transfer:int):
+    try:
+        cursor.execute('select * from transfer_request where id_transfer=:id_transfer',{'id_transfer':id_transfer})
+    except Error as e:
+        print(e)
+        return None
+    else:
+        res = cursor.fetchall()
+        transfer_requests = []
+        for tran_req in res:
+            transferRequest = {
+            'matricule':tran_req[0],
+            'transfer_id':tran_req[1],
+            'moyen_bac':tran_req[2],
+            'filiere_bac':tran_req[3],
+            'niveau_etude':tran_req[4],
+            'date_premier_insc':tran_req[5],
+            'formation':tran_req[6],
+            'univ_origin':tran_req[7],
+            'conge_academic':tran_req[8],
+            'etat':tran_req[9],
+            'choix1':tran_req[10],
+            'choix2':tran_req[11],
+            'choix3':tran_req[12],
+            'choix4':tran_req[13],
+        }
+            transfer_requests.append(transferRequest)
+        return transfer_requests
 
-    
-    
-"""def getTransferRequest(id_transfer:int):
-    return"""
 
 def getTransferRequests():
     try:
@@ -305,16 +401,57 @@ def getStudentInfo(matricule):
 #condition(id autoInc,id_fac , cond, type)
 #type should be INTERN, EXTERN or ORIENTATION
 def addCondition(id_fac:int,type:str, condition:str):
-    return
+    try:
+        cursor.execute("insert into condition (id_fac,cond,type) values (?,?,?)",(id_fac,condition,type))
+    except Error as e:
+        print(e)
+        return None
+    else :
+        con.commit()
+        print('condition added !')
+        return 'ok'
+
 
 def deleteCondition(id:int):
-    return
+    try:
+        cursor.execute("delete from condition where id=:id",{'id':id})
+    except Error as e:
+        print(e)
+        return None
+    else :
+        con.commit()
+        print('condition deleted !')
+        return 'ok'
 
 def updateCondition(id:int,condition:str):
-    return
+    try:
+        cursor.execute("update condition set cond=:condition where id=:id",{'id':id,'condition':condition})
+    except Error as e:
+        print(e)
+        return None
+    else:
+        con.commit()
+        print("condition updated")
+        return 'ok'
 
-def selectConditions(id_fac:int,type:str):
-    return
+def getConditions(id_fac:int,type:str):
+    try:
+        cursor.execute("select * from condition where id_fac=:id and type=:type",{'id':id_fac,'type':type})
+    except Error as e:
+        print(e)
+        return None
+    else:
+        conditions =[]
+        res = cursor.fetchall()
+        for cond in res:
+            c = {
+                'id':cond[0],
+                'id_fac':cond[1],
+                'cond':cond[2],
+                'type':cond[3]
+            }
+            conditions.append(c)
+        return conditions
 
 
 
@@ -346,4 +483,21 @@ def getDepartements(id_fac:int):
     return
 
 if __name__ == "__main__":
-    print(getTransferRequest(1))
+    #print(getAllTransferRequests(1))
+    #print(getTransferRequest(1))
+    pass
+
+
+
+
+#print(studentLogIn("mohamed@gmail.com","mohamed"))
+#addTransferRequest(1818,2,12.5,"math","l1","2018","sdf","sdf",0,SUSPENDED,1,1,1,1)
+#studentSignUp(1819,"ali@gmail.com","ali","ali","ali","05458796","male","2000")
+#addTransferRequest(1819,2,14,"sience","l1","2018","sdf","sdf",1,SUSPENDED,1,1,1,1)
+#print(getAllTransferRequests(2))
+
+#studentPasswordReset("mohamed@gmail.com","mohamed3","mohamed4")
+#print(studentLogIn("mohamed@gmail.com","mohamed3"))
+#adminPasswordReset("admin@gmail.com","admin2","admin")
+
+closeConnection()

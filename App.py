@@ -1,5 +1,3 @@
-from crypt import methods
-import email
 from flask import Flask, render_template, redirect, request, url_for, session
 from flask_session import Session
 from flask_bootstrap import Bootstrap
@@ -18,7 +16,7 @@ app.config['FLASKY_MAIL_SENDER'] = 'transfer & orientations app Admin <glm467536
 app.config['FLASKY_ADMIN'] = "glm467536@gmail.com"
 mail = Mail(app)
 app.config["SESSION_PERMANENT"] = False
-#app.config["SESSION_TYPE"] = "filesystem"
+app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 bootstrap = Bootstrap(app)
@@ -36,6 +34,10 @@ def internal_server_error(e):
 
 @app.route('/', methods = ["POST", "GET"])
 def index():
+    return render_template('index.html')
+
+@app.route('/connecter', methods = ["POST", "GET"])
+def login():
     #get info from the form 
     if request.method == "POST":
         email = request.form["email"]
@@ -54,18 +56,11 @@ def index():
     return render_template('login.html')
 
 
-@app.route('/connecter')
-def login():
-    if session.get("email") != None:
-        return render_template('admin/index.html')
-    return render_template('login.html')
-
-
 @app.route('/admin', methods = ["POST", "GET"])
 def index_admin():
     if session.get("email") != None:
         return render_template('admin/index.html')
-    return redirect(url_for('index'))
+    return redirect(url_for('login'))
 
 
 @app.route('/admin/transfer_interne')
@@ -73,7 +68,7 @@ def transferInterne():
     if session.get("email") != None:
         data = db.getTransferRequests()
         return render_template('admin/transfer_interne.html', data = data)
-    return redirect(url_for('index'))
+    return redirect(url_for('login'))
 
 
 @app.route('/admin/demande_details/<id_transfer>/')
@@ -81,10 +76,10 @@ def transferInterneDetails(id_transfer):
     if session.get("email") != None:
         id_transfer = int(id_transfer)
         transferInfo = db.getTransferRequest(id_transfer)
-        matricule = transferInfo[0]
+        matricule = transferInfo['matricule']
         StudentInfo = db.getStudentInfo(matricule)
         return render_template('admin/demande_details.html', transferInfo = transferInfo, StudentInfo = StudentInfo)
-    return redirect(url_for('index'))
+    return redirect(url_for('login'))
 
 
 @app.route('/admin/profile')
