@@ -1,0 +1,34 @@
+{% extends "admin/base.html" %}
+
+{% block title %}modifier_condition{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4">
+  <form method="post" action="/ajouteter_condition">
+    <div class="mb-4">
+      <h2 class="my-4">modifier une condition</h2>
+      <select id="disabledSelect" class="form-select">
+        <option>id_condition : 3</option>
+      </select>
+      <select class="form-select my-4" aria-label="Default select example">
+        <option value="" disabled selected>catégorie</option>
+        <option value="0">condition d'orientations</option>
+        <option value="1">condition de transfer interne</option>
+        <option value="2">condition de transfer externe</option>
+      </select>
+      <select class="form-select mt-4" aria-label="Default select example">
+        <option value="" disabled selected>faculté</option>
+        <option value="0">NTIC</option>
+        <option value="1">Science humain</option>
+        <option value="2">Science eco</option>
+        <option value="3">Sport</option>
+      </select>
+    </div>
+    <div class="mb-4">
+      <label for="exampleFormControlTextarea1" class="form-label">description</label>
+      <textarea class="form-control" id="desc_condition" rows="3"></textarea>
+    </div> 
+    <button type="submit" class="btn btn-success">enregistrer les modifications</button>
+  </form>
+</div>
+{% endblock content %}

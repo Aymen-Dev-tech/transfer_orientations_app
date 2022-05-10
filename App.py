@@ -68,27 +68,39 @@ def orientations():
     return render_template('admin/orientations.html')
 
 
-@app.route('/admin/conditions')
-def conditions():
-    return render_template('admin/conditions_orientation.html')
-
-
-@app.route('/admin/parametres')
-def parametres():
-    return render_template('admin/parametres.html')
-
 
 @app.route('/admin/demande_details/<id_transfer>')
 def transferInterneDetails(id_transfer):
     return render_template('admin/demande_details.html',id_transfer=id_transfer)
 
 
+@app.route('/admin/conditions')
+def condition():
+    return render_template('admin/conditions.html')
+
+
+@app.route('/admin/ajouter_condition')
+def ajout_condition():
+    return render_template('admin/ajouter_condition.html')
+
+
+@app.route('/admin/modifier_condition')
+def modif_condition():
+    return render_template('admin/modifier_condition.html')
+
+
 @app.route('/admin/profile')
 def profile():
     return render_template('admin/profile.html')
+
+@app.route('/admin/parametres')
+def parametres():
+    return render_template('admin/parametres.html')
+
 def send_async_email(app, msg):
     with app.app_context():
         mail.send(msg)
+        
 def send_email(to, subject, template, **kwargs):
     msg = Message(app.config['FLASKY_MAIL_SUBJECT_PREFIX'] + ' ' + subject,
                   sender=app.config['FLASKY_MAIL_SENDER'], recipients=[to])
@@ -97,6 +109,7 @@ def send_email(to, subject, template, **kwargs):
     thr = Thread(target=send_async_email, args=[app, msg])
     thr.start()
     return thr
+
 @app.route('/reset', methods=['GET', 'POST'])
 def password_reset_request():
     if request.method == "POST":
