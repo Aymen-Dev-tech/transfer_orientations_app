@@ -3,10 +3,14 @@ from sqlite3 import Error
 
 #change this path corresponding to where the db file is at
 
-# absolute_db_path = '/home/aymen/DEV/TpEdl/'
-absolute_db_path = 'C:/Users/pc-car/Desktop/project/transfer_orientations_app'
-# absolute_db_path = 'D:/Projects/transfer_app/'
-database = absolute_db_path+'app_data.db'
+
+# absolute_db_path = 'C:/Users/pc-car/Desktop/project/transfer_orientations_app'
+# database = absolute_db_path+'app_data.db'
+#=======
+#absolute_db_path = 'D:/Projects/transfer_app/'
+#absolute_db_path = '/home/aymen/DEV/TpEdl'
+#database = absolute_db_path+'app_data.db'
+database = "/home/aymen/DEV/TpEdl/app_data.db"
 con = sqlite3.connect(database, check_same_thread=False)
 cursor = con.cursor()
 READY = "ready"
@@ -122,13 +126,11 @@ def adminSignUp(email:str, password:str, nom:str, prenom:str, telephone:str, id_
         con.commit()
         return 'ok'
 
-def adminPasswordReset(email:str, oldPass:str, newPass:str):
-    res =adminLogIn(email,oldPass)
-    if(res != None):
+def adminPasswordReset(email:str, newPass:str):
+    #res =adminLogIn(email,oldPass)
         try:
-            cursor.execute("update admin set password=:newPass where email=:email and password=:oldPass",
+            cursor.execute("update admin set password=:newPass where email=:email",
             {'email':email,
-            'oldPass':oldPass,
             'newPass':newPass})
         except Error as e:
             print(e)
@@ -137,9 +139,6 @@ def adminPasswordReset(email:str, oldPass:str, newPass:str):
             print('password reset success')
             con.commit()
             return 'ok'
-    else:
-        print('wrong password or email')
-        return None
 
 
 #orientation(id autoInc,id_fac,start,finish)
@@ -324,9 +323,9 @@ def setTransferRequestState(matricule:int, etat:str):
         print('transfer request state updated')
         return 'ok'
 
-def getTransferRequest(matricule:int):
+def getTransferRequest(id_transfer:int):
     try:
-        cursor.execute('select * from transfer_request where matricule=:matricule',{'matricule':matricule})
+        cursor.execute('select * from transfer_request where id_transfer=:id_transfer',{'id_transfer':id_transfer})
     except Error as e:
         print(e)
         return None
@@ -381,6 +380,24 @@ def getAllTransferRequests(id_transfer:int):
         return transfer_requests
 
 
+def getTransferRequests():
+    try:
+        cursor.execute('select * from transfer_request where etat = "En attendre"')
+    except Error as e:
+        print(e)
+        return None
+    else:
+        res = cursor.fetchall()
+        return res
+def getStudentInfo(matricule):
+    try:
+        cursor.execute('select * from etudiant where matricule=:matricule',{'matricule':matricule})
+    except Error as e:
+        print(e)
+        return None
+    else:
+        res = cursor.fetchone()
+        return res
 #condition(id autoInc,id_fac , cond, type)
 #type should be INTERN, EXTERN or ORIENTATION
 def addCondition(id_fac:int,type:str, condition:str):
@@ -466,7 +483,9 @@ def getDepartements(id_fac:int):
     return
 
 if __name__ == "__main__":
-    print(adminLogIn("admin@gmail.com", "admin"))
+    #print(getAllTransferRequests(1))
+    print(getTransferRequests())
+    pass
 
 
 
@@ -481,4 +500,4 @@ if __name__ == "__main__":
 #print(studentLogIn("mohamed@gmail.com","mohamed3"))
 #adminPasswordReset("admin@gmail.com","admin2","admin")
 
-closeConnection()
+#closeConnection()
