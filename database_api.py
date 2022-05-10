@@ -377,7 +377,7 @@ def getAllTransferRequests(id_transfer:int):
 
 def getTransferRequests():
     try:
-        cursor.execute('select * from transfer_request')
+        cursor.execute('select * from transfer_request where etat = "En attendre"')
     except Error as e:
         print(e)
         return None
@@ -479,7 +479,7 @@ def getDepartements(id_fac:int):
 
 if __name__ == "__main__":
     #print(getAllTransferRequests(1))
-    #print(getTransferRequest(1))
+    print(getTransferRequests())
     pass
 
 

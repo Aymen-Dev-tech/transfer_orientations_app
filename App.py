@@ -1,3 +1,4 @@
+import email
 from flask import Flask, render_template, redirect, request, url_for, session
 from flask_session import Session
 from flask_bootstrap import Bootstrap
@@ -47,6 +48,7 @@ def login():
         #fetch from db
         if password == "admin":
             if db.adminLogIn(email, password) != None:
+                db.closeConnection()
                 return redirect(url_for('index_admin'))  
             else:
                 return render_template('login.html')
@@ -66,8 +68,11 @@ def index_admin():
 @app.route('/admin/transfer_interne')
 def transferInterne():
     if session.get("email") != None:
-        data = db.getTransferRequests()
-        return render_template('admin/transfer_interne.html', data = data)
+        if db.getTransferRequests() != None:
+            db.closeConnection()
+            return render_template('admin/transfer_interne.html', data = db.getTransferRequests())
+        else:
+            return render_template('admin/transfer_interne.html')
     return redirect(url_for('login'))
 
 
@@ -78,6 +83,7 @@ def transferInterneDetails(id_transfer):
         transferInfo = db.getTransferRequest(id_transfer)
         matricule = transferInfo['matricule']
         StudentInfo = db.getStudentInfo(matricule)
+        db.closeConnection()
         return render_template('admin/demande_details.html', transferInfo = transferInfo, StudentInfo = StudentInfo)
     return redirect(url_for('login'))
 
@@ -85,6 +91,17 @@ def transferInterneDetails(id_transfer):
 @app.route('/admin/profile')
 def profile():
     return render_template('admin/profile.html')
+@app.route('/admin/transfer_interne/<matricule>/<State>')
+def updateTransferEtat(matricule, State):
+    #update Transfer Request Etat in db
+    db.setTransferRequestState(matricule, State)
+    StudentInfo = db.getStudentInfo(matricule)
+    StudentEmail = StudentInfo[1]
+    db.closeConnection()
+    #send email to Student
+    send_email(StudentEmail, 'Transfer State','mail/TransferState', user=StudentEmail, State = State)
+    print("sending email to " + StudentEmail)
+    return "ok"
 def send_async_email(app, msg):
     with app.app_context():
         mail.send(msg)
@@ -101,7 +118,7 @@ def password_reset_request():
     if request.method == "POST":
         email = request.form["email"]
         send_email(email, 'Reset Your Password','mail/reset_password', user=email)
-        print("sending email to"+ email)
+        print("sending email to " + email)
         return redirect(url_for('login'))
     return render_template('reset_password.html')
 
@@ -111,6 +128,7 @@ def newPassword():
         newPassword = request.form["password"]
         #call update password from the db api
         db.adminPasswordReset(session.get("email"), newPassword)
+        db.closeConnection()
         return redirect(url_for('login'))
     return render_template('newPassword.html')
 
