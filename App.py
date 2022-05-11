@@ -1,8 +1,10 @@
 
 import email
+from unicodedata import category
 from flask import Flask, render_template, redirect, request, url_for, session
 from flask_session import Session
 from flask_bootstrap import Bootstrap
+from sqlalchemy import null
 import database_api as db
 from flask_mail import Mail, Message
 from threading import Thread
@@ -111,18 +113,42 @@ def transferInterneDetails(id_transfer):
 
 @app.route('/admin/conditions')
 def condition():
-    return render_template('admin/conditions.html')
+    if session.get("email") != None:
+        type = 'orientation'
+        conditions = db.getAllConditions(type)
+        return render_template('admin/conditions.html', conditions = conditions)
+    return redirect(url_for('login'))
+    
 
 
 @app.route('/admin/ajouter_condition')
-def ajout_condition():
-    return render_template('admin/ajouter_condition.html')
+def ajouter_condition():
+    if session.get("email") != None:
+        return render_template('admin/ajouter_condition.html')
+    return redirect(url_for('login'))
 
 
-@app.route('/admin/modifier_condition')
-def modif_condition():
-    return render_template('admin/modifier_condition.html')
-
+@app.route('/admin/conditions/modifier_condition/<IdCondition>', methods = ["POST", "GET"])
+def modifier_condition(IdCondition):
+    if session.get("email") != None:
+        if request.method == "POST":
+            category = request.form.get('category')
+            faculty = request.form.get('faculty')
+            if faculty == "Nouvelle Technologies d'Informations et Communication": id_fac = 1
+            elif faculty == "Sience Humain et Social": id_fac = 2
+            elif faculty == "Economie": id_fac = 3
+            elif faculty == "Sience des Activites Sportives" : id_fac = 4
+            elif faculty == "Bibliotheconomie": id_fac = 5
+            elif faculty == "Psychologie":id_fac = 6
+            description = request.form.get('description')
+            db.updateCondition(int(IdCondition), id_fac, category, description)
+            db.closeConnection()
+    return render_template('admin/modifier_condition.html', IdCondition = IdCondition)
+@app.route('/admin/conditions/modifier_condition/<IdCondition>/delete')
+def DeleteCondition(IdCondition):
+    if db.deleteCondition(IdCondition) != None:
+        redirect(url_for('condition', IdCondition = IdCondition))
+    redirect(url_for('condition', IdCondition = IdCondition))
 
 @app.route('/admin/profile')
 def profile():

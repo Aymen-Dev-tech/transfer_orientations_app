@@ -35,16 +35,18 @@
                   </tr>
                 </thead>
                 <tbody>
+                  {% for item in conditions %}
                   <tr>
-                    <th scope="row">1</th>
-                    <td>#25</td>
-                    <td>Science Eco</td>
-                    <td>orientation</td>
-                    <td>Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Condition_2 : Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Condition_3 : Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch.</td>
-                    <td><a class="link-success text-decoration-none" href="/admin/modifier_condition">modifier</a></td>
-                    <td><a class="link-danger text-decoration-none" href="#">Supprimer</a></td>
+                    <th scope="row">{{conditions.index(item) + 1}}</th>
+                    <td>{{item['id']}}</td>
+                    <td>{{item['id_fac']}}</td>
+                    <td>{{item['type']}}</td>
+                    <td>{{item['cond']}}</td>
+                    <td><a class="link-success text-decoration-none" href="{{url_for('modifier_condition', IdCondition = item['id'])}}">modifier</a></td>
+                    <td><a class="link-danger text-decoration-none" href="{{url_for('DeleteCondition', IdCondition = item['id'])}}">Supprimer</a></td>
                   </tr>
-                  <tr>
+                  {% endfor %}
+                  <!--<tr>
                     <th scope="row">2</th>
                     <td>#34</td>
                     <td>Science Eco</td>
@@ -52,13 +54,12 @@
                     <td>Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Condition_2 : Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Condition_3 : Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch.</td>
                     <td><a class="link-success text-decoration-none" href="/admin/modifier_condition">modifier</a></td>
                     <td><a class="link-danger text-decoration-none" href="#">Supprimer</a></td>
-                  </tr>
+                  </tr>-->
                 </tbody>
               </table>
             </div>
             <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">condition transfer interne </div>
             <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">condition transfer externe</div>
-        </div>
         <hr class="my-4"> 
     </div>
 </main>

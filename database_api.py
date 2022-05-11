@@ -426,9 +426,9 @@ def deleteCondition(id:int):
         print('condition deleted !')
         return 'ok'
 
-def updateCondition(id:int,condition:str):
+def updateCondition(id:int,id_fac, type, cond:str):
     try:
-        cursor.execute("update condition set cond=:condition where id=:id",{'id':id,'condition':condition})
+        cursor.execute('update condition set cond=:cond, type=:type, id_fac=:id_fac where id=:id',{'id':id,'cond':cond, 'type':type, 'id_fac':id_fac})
     except Error as e:
         print(e)
         return None
@@ -455,7 +455,24 @@ def getConditions(id_fac:int,type:str):
             }
             conditions.append(c)
         return conditions
-
+def getAllConditions(type):
+    try:
+        cursor.execute("select * from condition where type=:type",{'type':type})
+    except Error as e:
+        print(e)
+        return None
+    else:
+        conditions =[]
+        res = cursor.fetchall()
+        for cond in res:
+            c = {
+                'id':cond[0],
+                'id_fac':cond[1],
+                'cond':cond[2],
+                'type':cond[3]
+            }
+            conditions.append(c)
+        return conditions
 
 
 #notification(id autoInc, matricule, message)
@@ -575,10 +592,9 @@ def getDepartements(id_fac:int):
 
 if __name__ == "__main__":
     #print(getAllTransferRequests(1))
-    #print(getTransferRequests("interne"))
-    #print(getTransferRequests("txt"))
-    pass
-
+    print(getTransferRequests("interne"))
+    #print(updateCondition(1, 1, "orientation", "test"))
+    
 
 
 #print(studentLogIn("mohamed@gmail.com","mohamed"))
