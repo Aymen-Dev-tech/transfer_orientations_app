@@ -66,15 +66,15 @@ def index_admin():
     return redirect(url_for('login'))
 
 
-# @app.route('/admin/transfer_interne')
-# def transferInterne():
-#     if session.get("email") != None:
-#         if db.getTransferRequests() != None:
-#             db.closeConnection()
-#             return render_template('admin/transfer_interne.html', data = db.getTransferRequests())
-#         else:
-#             return render_template('admin/transfer_interne.html')
-#     return redirect(url_for('login'))
+@app.route('/admin/transfer_interne')
+def transferInterne():
+     if session.get("email") != None:
+         if db.getTransferRequests() != None:
+             db.closeConnection()
+             return render_template('admin/transfer_interne.html', data = db.getTransferRequests())
+         else:
+             return render_template('admin/transfer_interne.html')
+     return redirect(url_for('login'))
 
 
 
@@ -136,7 +136,9 @@ def updateTransferEtat(matricule, State):
     send_email(StudentEmail, 'Transfer State','mail/TransferState', user=StudentEmail, State = State)
     print("sending email to " + StudentEmail)
     return "ok"
-
+@app.route('/etudiant')
+def Student_index():
+    return render_template('etudiant/index.html')
 
 def send_async_email(app, msg):
     with app.app_context():
