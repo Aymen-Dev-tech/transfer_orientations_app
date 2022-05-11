@@ -7,10 +7,10 @@ from sqlite3 import Error
 # absolute_db_path = 'C:/Users/pc-car/Desktop/project/transfer_orientations_app'
 # database = absolute_db_path+'app_data.db'
 #=======
-#absolute_db_path = 'D:/Projects/transfer_app/'
+absolute_db_path = 'D:/Projects/transfer_app/'
 #absolute_db_path = '/home/aymen/DEV/TpEdl'
-#database = absolute_db_path+'app_data.db'
-database = "/home/aymen/DEV/TpEdl/app_data.db"
+database = absolute_db_path+'app_data.db'
+#database = "/home/aymen/DEV/TpEdl/app_data.db"
 con = sqlite3.connect(database, check_same_thread=False)
 cursor = con.cursor()
 READY = "ready"
@@ -467,15 +467,70 @@ def getAllNotifications(matricule):
 
 
 
-#specialite
+#specialite(id autoInc, name, niveau, orientation_places, transfer_places, id_dep, id_fac)
 def getSpecialites(id_fac:int):
-    return
+    try:
+        cursor.execute("select * from specialite where id_fac=:id",{'id':id_fac})
+    except Error as e:
+        print(e)
+        return None
+    else:
+        res = cursor.fetchall()
+        specialities = []
+        for specialitie in res:
+            s = {
+                'id':specialitie[0],
+                'name':specialitie[1],
+                'niveau':specialitie[2],
+                'orientation_places':specialitie[3],
+                'transfer_places':specialitie[4],
+                'id_dep':specialitie[5],
+                'id_fac':specialitie[6]
+            }
+            specialities.append(s)
+        return specialities
+
+def getSpecialiteInformation(id_specialite:int):
+    try:
+        cursor.execute('select * from specialite where id=:id',{'id':id_specialite})
+    except Error as e:
+        print(e)
+        return None
+    else:
+        specialitie = cursor.fetchone()
+        return {
+                'id':specialitie[0],
+                'name':specialitie[1],
+                'niveau':specialitie[2],
+                'orientation_places':specialitie[3],
+                'transfer_places':specialitie[4],
+                'id_dep':specialitie[5],
+                'id_fac':specialitie[6]
+            }
 
 def updateTransferPlaces(id_specialite:int, nbr_places:int):
-    return
+    try:
+        cursor.execute("update specialite set transfer_places=:nbr where id=:id",{'id':id_specialite,'nbr':nbr_places})
+    except Error as e:
+        print(e)
+        return None
+    else:
+        con.commit()
+        print('transfer places updated !')
+        return 'ok'    
+
 
 def updateOrientationPlaces(id_specialite:int, nbr_places:int):
-    return
+    try:
+        cursor.execute("update specialite set orientation_places=:nbr where id=:id",{'id':id_specialite,'nbr':nbr_places})
+    except Error as e:
+        print(e)
+        return None
+    else:
+        con.commit()
+        print('orientation places updated !')
+        return 'ok'    
+
 
 #   faculte(id autoInc,name)
 #   departement(id autoInc,nom,id_fac)
