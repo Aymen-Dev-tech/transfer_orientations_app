@@ -380,9 +380,12 @@ def getAllTransferRequests(id_transfer:int):
         return transfer_requests
 
 
-def getTransferRequests():
+def getTransferRequests(type):
     try:
-        cursor.execute('select * from transfer_request where etat = "En attendre"')
+        if type == "interne":
+            cursor.execute('select * from transfer_request where etat = "En attendre" and univ_origin = "constantine2"')
+        else:
+            cursor.execute('select * from transfer_request where etat = "En attendre" and univ_origin != "constantine2"')
     except Error as e:
         print(e)
         return None
@@ -484,9 +487,9 @@ def getDepartements(id_fac:int):
 
 if __name__ == "__main__":
     #print(getAllTransferRequests(1))
-    print(getTransferRequests())
+    #print(getTransferRequests("interne"))
+    #print(getTransferRequests("txt"))
     pass
-
 
 
 

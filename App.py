@@ -68,10 +68,11 @@ def index_admin():
 
 @app.route('/admin/transfer_interne')
 def transferInterne():
+     type = "interne"
      if session.get("email") != None:
-         if db.getTransferRequests() != None:
+         if db.getTransferRequests(type) != None:
              db.closeConnection()
-             return render_template('admin/transfer_interne.html', data = db.getTransferRequests())
+             return render_template('admin/transfer_interne.html', data = db.getTransferRequests(type))
          else:
              return render_template('admin/transfer_interne.html')
      return redirect(url_for('login'))
@@ -80,7 +81,15 @@ def transferInterne():
 
 @app.route('/admin/transfer_externe')
 def transferExterne():
-    return render_template('admin/transfer_externe.html')
+    type = "externe"
+    if session.get("email") != None:
+         if db.getTransferRequests(type) != None:
+            db.closeConnection()
+            return render_template('admin/transfer_externe.html', data = db.getTransferRequests(type))
+         else:
+             return render_template('admin/transfer_externe.html')
+    return redirect(url_for('login'))
+    
 
 
 @app.route('/admin/orientations')
