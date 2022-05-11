@@ -459,11 +459,44 @@ def getConditions(id_fac:int,type:str):
 
 
 #notification(id autoInc, matricule, message)
-def addNewNotification(matricule, message):
-    return
+def addNewNotification(matricule:int, message:str):
+    try:
+        cursor.execute('insert into notification (matricule,message) values(?,?)',(matricule,message))
+    except Error as e:
+        print(e)
+        return None
+    else:
+        con.commit()
+        print('notification added')
+        return 'ok'
+def deleteNotification(id:int):
+    try:
+        cursor.execute("delete from notification where id=:id",{'id':id})
+    except Error as e:
+        print(e)
+        return None
+    else:
+        con.commit()
+        print('notification deleted ')
+        return 'ok'
 
-def getAllNotifications(matricule):
-    return
+def getAllNotifications(matricule:int):
+    try:
+        cursor.execute('select * from notification where matricule=:matricule',{'matricule':matricule})
+    except Error as e:
+        print(e)
+        return None
+    else:
+        res = cursor.fetchall()
+        notifications = []
+        for notification in res:
+            n ={
+                'id':notification[0],
+                'matricule':notification[1],
+                'message':notification[2]
+            }
+            notifications.append(n)
+        return notifications
 
 
 
