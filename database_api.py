@@ -7,10 +7,9 @@ from sqlite3 import Error
 # absolute_db_path = 'C:/Users/pc-car/Desktop/project/transfer_orientations_app'
 # database = absolute_db_path+'app_data.db'
 #=======
-absolute_db_path = 'D:/Projects/transfer_app/'
-#absolute_db_path = '/home/aymen/DEV/TpEdl'
-database = absolute_db_path+'app_data.db'
-#database = "/home/aymen/DEV/TpEdl/app_data.db"
+#absolute_db_path = 'D:/Projects/transfer_app/'
+#database = absolute_db_path+'app_data.db'
+database = "/home/aymen/DEV/TpEdl/app_data.db"
 con = sqlite3.connect(database, check_same_thread=False)
 cursor = con.cursor()
 READY = "ready"
@@ -403,9 +402,9 @@ def getStudentInfo(matricule):
         return res
 #condition(id autoInc,id_fac , cond, type)
 #type should be INTERN, EXTERN or ORIENTATION
-def addCondition(id_fac:int,type:str, condition:str):
+def addCondition(id, id_fac:int,type:str, condition:str):
     try:
-        cursor.execute("insert into condition (id_fac,cond,type) values (?,?,?)",(id_fac,condition,type))
+        cursor.execute("insert into condition (id,id_fac,cond,type) values (?,?,?,?)",(id, id_fac,condition,type))
     except Error as e:
         print(e)
         return None
@@ -455,9 +454,9 @@ def getConditions(id_fac:int,type:str):
             }
             conditions.append(c)
         return conditions
-def getAllConditions(type):
+def getAllConditions():
     try:
-        cursor.execute("select * from condition where type=:type",{'type':type})
+        cursor.execute("select * from condition")
     except Error as e:
         print(e)
         return None
@@ -589,11 +588,21 @@ def getFaculties():
 
 def getDepartements(id_fac:int):
     return
+def getLastIdOfTable(tableName):
+    try:
+        cursor.execute("SELECT MAX(id) FROM {tableName}".format(tableName = tableName))
+    except Error as e:
+        print(e)
+        return None
+    else:
+        res = cursor.fetchone()
+        return res[0]
 
 if __name__ == "__main__":
     #print(getAllTransferRequests(1))
-    print(getTransferRequests("interne"))
-    #print(updateCondition(1, 1, "orientation", "test"))
+    #print(getTransferRequests("interne"))
+    #print(getLastIdOfTable("faculte"))
+    pass
     
 
 

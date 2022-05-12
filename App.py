@@ -1,4 +1,5 @@
 
+from crypt import methods
 import email
 from unicodedata import category
 from flask import Flask, render_template, redirect, request, url_for, session
@@ -45,21 +46,25 @@ def login():
     #get info from the form 
     if request.method == "POST":
         email = request.form["email"]
-        #save email in user session
-        session["email"] = email
         password = request.form["password"]
         #fetch from db
-        if password == "admin":
-            if db.adminLogIn(email, password) != None:
-                db.closeConnection()
-                return redirect(url_for('index_admin'))  
-            else:
-                return render_template('login.html')
+        if db.adminLogIn(email, password) != None:
+            db.closeConnection()
+            #save email in user session
+            session["email"] = email
+            return redirect(url_for('index_admin'))  
+        elif db.studentLogIn(email, password) != None:
+            db.closeConnection()
+            session["email"] = email
+            return redirect(url_for('Student_index')) 
         else:
-            #Student dashboard
-            pass
+            return render_template('login.html')
     return render_template('login.html')
-
+        
+@app.route("/logout", methods = ["POST", "GET"])
+def logout():
+    session.pop("user", None)
+    return redirect(url_for("login"))
 
 @app.route('/admin', methods = ["POST", "GET"])
 def index_admin():
@@ -114,16 +119,31 @@ def transferInterneDetails(id_transfer):
 @app.route('/admin/conditions')
 def condition():
     if session.get("email") != None:
-        type = 'orientation'
-        conditions = db.getAllConditions(type)
+        conditions = db.getAllConditions()
         return render_template('admin/conditions.html', conditions = conditions)
     return redirect(url_for('login'))
     
 
 
-@app.route('/admin/ajouter_condition')
+@app.route('/admin/ajouter_condition', methods = ['POST', 'GET'])
 def ajouter_condition():
     if session.get("email") != None:
+        if request.method == "POST":
+            category = request.form.get('category')
+            faculty = request.form.get('faculty')
+            if faculty == "Nouvelle Technologies d'Informations et Communication": id_fac = 1
+            elif faculty == "Sience Humain et Social": id_fac = 2
+            elif faculty == "Economie": id_fac = 3
+            elif faculty == "Sience des Activites Sportives" : id_fac = 4
+            elif faculty == "Bibliotheconomie": id_fac = 5
+            elif faculty == "Psychologie":id_fac = 6
+            description = request.form.get('description')
+            lastId = db.getLastIdOfTable("condition")
+            if lastId == None:
+                db.addCondition(1, id_fac, category, description)
+            lastId+=1
+            db.addCondition(lastId, id_fac, category, description)
+            db.closeConnection()
         return render_template('admin/ajouter_condition.html')
     return redirect(url_for('login'))
 
@@ -143,16 +163,76 @@ def modifier_condition(IdCondition):
             description = request.form.get('description')
             db.updateCondition(int(IdCondition), id_fac, category, description)
             db.closeConnection()
-    return render_template('admin/modifier_condition.html', IdCondition = IdCondition)
+        return render_template('admin/modifier_condition.html', IdCondition = IdCondition)
+    return redirect(url_for('login'))
+
 @app.route('/admin/conditions/modifier_condition/<IdCondition>/delete')
 def DeleteCondition(IdCondition):
-    if db.deleteCondition(IdCondition) != None:
-        redirect(url_for('condition', IdCondition = IdCondition))
-    redirect(url_for('condition', IdCondition = IdCondition))
+    if session.get("email") != None:
+        if db.deleteCondition(IdCondition) != None:
+            return redirect(url_for('condition'))
+        return redirect(url_for('condition'))
+    return redirect(url_for('login'))
 
 @app.route('/admin/profile')
 def profile():
-    return render_template('admin/profile.html')
+    if session.get("email") != None:
+        return render_template('admin/profile.html')
+    return redirect(url_for('login'))
+
+@app.route('/admin/profile/Edit', methods = ["POST", "GET"])
+def EditProfile():
+    if session.get("email") != None:
+        return redirect(url_for('profile'))
+    return redirect(url_for('login'))
+
+@app.route('/admin/profile/Add', methods = ["POST", "GET"])
+def AddAdmin():
+    if session.get("email") != None:
+        if request.method == "POST":
+            email = request.form.get('email')
+            password = request.form.get('password')
+            tel = request.form.get('telephone')
+            nom = request.form.get('nom')
+            prenom = request.form.get('prenom')
+            faculty = request.form.get('faculty')
+            if faculty == "Nouvelle Technologies d'Informations et Communication": id_fac = 1
+            elif faculty == "Sience Humain et Social": id_fac = 2
+            elif faculty == "Economie": id_fac = 3
+            elif faculty == "Sience des Activites Sportives" : id_fac = 4
+            elif faculty == "Bibliotheconomie": id_fac = 5
+            elif faculty == "Psychologie":id_fac = 6
+            departement = request.form.get('departement')
+            if departement == "Math et Informatique": id_dep = 1
+            elif departement == "Technologies des Logiciel et de System d'Information": id_dep = 2
+            elif departement == "Informatique Fondamental et ses Applications": id_dep = 3
+            elif departement == "Sience Humain": id_dep = 4
+            elif departement == "Sience Social": id_dep = 5
+            elif departement == "Sience de Psychologie": id_dep = 6
+            elif departement == "Orthoponie": id_dep = 7
+            elif departement == "Sience d'Education": id_dep = 8
+            elif departement == "Tronc Commun Economie": id_dep = 9
+            elif departement == "Science Economique": id_dep = 10
+            elif departement == "Finance et Comptabilite": id_dep = 11
+            elif departement == "Science de Gestion": id_dep = 12
+            elif departement == "Science Commerciale": id_dep = 13
+            elif departement == "Tronc Commun Sport": id_dep = 14
+            elif departement == "Education et Motricite": id_dep = 15
+            elif departement == "Entrainement Sportif et competitif": id_dep = 16
+            elif departement == "Tronc Commun Bibliotheconomie": id_dep = 17
+            elif departement == "Archive": id_dep = 18
+            elif departement == "Bibliotheque": id_dep = 19
+            db.adminSignUp(email, password, nom, prenom, tel, id_fac, id_dep)
+            db.closeConnection()
+
+        return redirect(url_for('profile'))
+    return redirect(url_for('login'))
+
+@app.route('/admin/profile/Delete', methods = ["POST", "GET"])
+def DeleteAdmin():
+    if session.get("email") != None:
+        return redirect(url_for('profile'))
+    return redirect(url_for('login'))
 
 
 @app.route('/admin/parametres')
