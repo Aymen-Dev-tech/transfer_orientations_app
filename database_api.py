@@ -93,9 +93,9 @@ def studentPasswordReset(email:str, oldPass:str, newPass:str):
 
 
 #admin(email,password,telephone,nom,prenom,id_dep,id_fac)
-def adminLogIn(email:str, password:str):
+def adminLogIn(email:str):
     try:
-        cursor.execute("select * from admin where email=:email and password=:password",{"email":email,"password":password})    
+        cursor.execute("select * from admin where email=:email",{"email":email})    
     except Error as e:
         print(e)
         return None
@@ -454,9 +454,9 @@ def getConditions(id_fac:int,type:str):
             }
             conditions.append(c)
         return conditions
-def getAllConditions():
+def getAllConditions(idFac):
     try:
-        cursor.execute("select * from condition")
+        cursor.execute("select * from condition where id_fac = {idFac}".format(idFac = idFac))
     except Error as e:
         print(e)
         return None
@@ -601,8 +601,9 @@ def getLastIdOfTable(tableName):
 if __name__ == "__main__":
     #print(getAllTransferRequests(1))
     #print(getTransferRequests("interne"))
-    #print(getLastIdOfTable("faculte"))
+    #print(getAllConditions(4))
     pass
+    
     
 
 

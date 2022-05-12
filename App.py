@@ -48,7 +48,7 @@ def login():
         email = request.form["email"]
         password = request.form["password"]
         #fetch from db
-        if db.adminLogIn(email, password) != None:
+        if db.adminLogIn(email) != None:
             db.closeConnection()
             #save email in user session
             session["email"] = email
@@ -61,15 +61,20 @@ def login():
             return render_template('login.html')
     return render_template('login.html')
         
-@app.route("/logout", methods = ["POST", "GET"])
+@app.route("/logout")
 def logout():
     session.pop("user", None)
     return redirect(url_for("login"))
 
-@app.route('/admin', methods = ["POST", "GET"])
+@app.route('/admin')
 def index_admin():
     if session.get("email") != None:
-        return render_template('admin/index.html')
+        numberOfTransferInterne = len(db.getTransferRequests('interne'))
+        numberOfTransferExterne = len(db.getTransferRequests("externe"))
+        AdminInfo = db.adminLogIn(session.get("email"))
+        idFac = AdminInfo['id_fac']
+        numberOfConditions = len(db.getAllConditions(idFac))
+        return render_template('admin/index.html', numberOfTransferInterne = numberOfTransferInterne, numberOfTransferExterne = numberOfTransferExterne, numberOfConditions = numberOfConditions)
     return redirect(url_for('login'))
 
 
@@ -119,7 +124,9 @@ def transferInterneDetails(id_transfer):
 @app.route('/admin/conditions')
 def condition():
     if session.get("email") != None:
-        conditions = db.getAllConditions()
+        AdminInfo = db.adminLogIn(session.get("email"))
+        idFac = AdminInfo['id_fac']
+        conditions = db.getAllConditions(idFac)
         return render_template('admin/conditions.html', conditions = conditions)
     return redirect(url_for('login'))
     
@@ -250,7 +257,7 @@ def updateTransferEtat(matricule, State):
     #send email to Student
     send_email(StudentEmail, 'Transfer State','mail/TransferState', user=StudentEmail, State = State)
     print("sending email to " + StudentEmail)
-    return "ok"
+    return redirect(url_for('transferInterne'))
 @app.route('/etudiant')
 def Student_index():
     return render_template('etudiant/index.html')
