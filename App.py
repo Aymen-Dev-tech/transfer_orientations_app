@@ -2,13 +2,18 @@
 from crypt import methods
 import email
 from unicodedata import category
-from flask import Flask, render_template, redirect, request, url_for, session
+from flask import Flask, render_template, redirect, request, url_for, session, send_file
 from flask_session import Session
 from flask_bootstrap import Bootstrap
 from sqlalchemy import null
 import database_api as db
 from flask_mail import Mail, Message
 from threading import Thread
+from werkzeug.utils import secure_filename
+import os
+from glob import glob
+from io import BytesIO
+from zipfile import ZipFile
 app = Flask(__name__)
 #email configuration
 app.config['MAIL_SERVER'] = 'smtp.googlemail.com'
@@ -250,7 +255,7 @@ def parametres():
 @app.route('/admin/transfer_interne/<matricule>/<State>')
 def updateTransferEtat(matricule, State):
     #update Transfer Request Etat in db
-    db.setTransferRequestState(matricule, State)
+    db.setTransferRequestState(int(matricule), State)
     StudentInfo = db.getStudentInfo(matricule)
     StudentEmail = StudentInfo[1]
     db.closeConnection()
@@ -260,7 +265,54 @@ def updateTransferEtat(matricule, State):
     return redirect(url_for('transferInterne'))
 @app.route('/etudiant')
 def Student_index():
-    return render_template('etudiant/index.html')
+    if session.get("email") != None:
+        return render_template('etudiant/index.html')
+    return redirect(url_for('login'))
+@app.route('/etudiant/upload', methods = ["POST", "GET"])
+def upload():
+    if session.get("email") != None:
+        if request.method == "POST":
+            files = request.files.getlist('files')
+            # if user does not select file, browser also
+            # submit a empty part without filename
+            if files[0].filename == '':
+                print('no files')
+                return redirect(request.url)
+            else:
+                for f in files:
+                    StudentInfo = db.getStudentInfoByEmail(session.get("email"))
+                    app.config['UPLOAD_FOLDER'] = CreateFolder(str(StudentInfo[0]))
+                    f.save(os.path.join(app.config['UPLOAD_FOLDER'] ,secure_filename(f.filename))) # this will secure the file
+                    return 'file uploaded successfully'
+        return render_template('etudiant/uploadingForm.html')
+    return redirect(url_for('login'))
+
+#create folders for each student 
+def CreateFolder(StudentID):
+    upload_folder = f"Docs/{StudentID}"
+    if not os.path.exists(upload_folder):
+        os.makedirs(upload_folder)
+
+    return upload_folder
+@app.route('/admin/transfer_interne/<matricule>/')
+def downloadDocs(matricule):
+    files = GetAllStudentDocs(matricule)
+    print("send the file")
+    return send_file(
+        files,
+        as_attachment=True,
+        download_name=f'{matricule}.zip'
+    )
+def GetAllStudentDocs(matricule):
+    #change this to the absolute path of Docs Folder
+    target = f'/home/aymen/DEV/TpEdl/Docs/{matricule}/*'
+    stream = BytesIO()
+    #zip all student docs
+    with ZipFile(stream, 'w') as zf:
+        for file in glob(target):
+            zf.write(file, os.path.basename(file))
+    stream.seek(0)
+    return stream
 
 def send_async_email(app, msg):
     with app.app_context():

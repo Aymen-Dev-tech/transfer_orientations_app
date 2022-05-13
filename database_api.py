@@ -400,6 +400,15 @@ def getStudentInfo(matricule):
     else:
         res = cursor.fetchone()
         return res
+def getStudentInfoByEmail(email):
+    try:
+        cursor.execute('select * from etudiant where email=:email',{'email':email})
+    except Error as e:
+        print(e)
+        return None
+    else:
+        res = cursor.fetchone()
+        return res
 #condition(id autoInc,id_fac , cond, type)
 #type should be INTERN, EXTERN or ORIENTATION
 def addCondition(id, id_fac:int,type:str, condition:str):
@@ -602,6 +611,7 @@ if __name__ == "__main__":
     #print(getAllTransferRequests(1))
     #print(getTransferRequests("interne"))
     #print(getAllConditions(4))
+    #print(getStudentInfoByEmail("mohamed@gmail.com")[0])
     pass
     
     
