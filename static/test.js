@@ -1,4 +1,4 @@
-const API="https://reqres.in/api"
+const API="https://blabla/api"
 
 window.onload= async()=>{
     await fetch(`${API}/users`)

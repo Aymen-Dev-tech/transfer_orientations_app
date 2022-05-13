@@ -66,15 +66,15 @@ def index_admin():
     return redirect(url_for('login'))
 
 
-# @app.route('/admin/transfer_interne')
-# def transferInterne():
-#     if session.get("email") != None:
-#         if db.getTransferRequests() != None:
-#             db.closeConnection()
-#             return render_template('admin/transfer_interne.html', data = db.getTransferRequests())
-#         else:
-#             return render_template('admin/transfer_interne.html')
-#     return redirect(url_for('login'))
+@app.route('/admin/transfer_interne')
+def transferInterne():
+    if session.get("email") != None:
+        if db.getTransferRequests() != None:
+            db.closeConnection()
+            return render_template('admin/transfer_interne.html', data = db.getTransferRequests())
+        else:
+            return render_template('admin/transfer_interne.html')
+    return redirect(url_for('login'))
 
 
 
