@@ -31,11 +31,9 @@
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                    <li><a class="dropdown-item" href="/admin/profile">Profile</a></li>
+                    <li><a class="dropdown-item" href="{{url_for('profile')}}">Profile</a></li>
                     <li><hr class="dropdown-divider" /></li>
-                    <form action="/admin/deconnecter" method="post">
-                        <li><button type="submit" class="dropdown-item">Déconnecter</a></li>
-                    </form>
+                    <li><a class="dropdown-item" href="{{url_for('logout')}}">Déconnecter</a></li>
                 </ul>
             </li>
         </ul>
@@ -60,9 +58,10 @@
                         </a>
                         <div class="collapse show" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                             <nav class="sb-sidenav-menu-nested nav">
-                                <a class="nav-link {% if request.path =='/admin/orientations'%} active {% endif %}" href="/admin/orientations">D'Orientations</a>
-                                <a class="nav-link {% if request.path =='/admin/transfer_interne'%} active {% endif %}" href="/admin/transfer_interne">De transfers Interne</a>
-                                <a class="nav-link {% if request.path =='/admin/transfer_interne/details'%} active {% endif %}" href="/admin/transfer_externe">De transfers Externe</a>
+                                <!--Note in href use url_for() and pass the name of the view function-->
+                                <a class="nav-link {% if request.path =='/admin/orientations'%} active {% endif %}" href="{{url_for('orientations')}}">D'Orientations</a>
+                                <a class="nav-link {% if request.path =='/admin/transfer_interne'%} active {% endif %}" href="{{url_for('transferInterne')}}">De transfers Interne</a>
+                                <a class="nav-link {% if request.path =='/admin/transfer_interne/details'%} active {% endif %}" href="{{url_for('transferExterne')}}">De transfers Externe</a>
                             </nav>
                         </div>
                         <div class="sb-sidenav-menu-heading">Les conditions</div>
@@ -73,7 +72,7 @@
                         </a>
                         <div class="collapse" id="collapsePages" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
                             <nav class="sb-sidenav-menu-nested nav">
-                                <a class="nav-link" href="/admin/conditions">Tous les conditions</a>
+                                <a class="nav-link" href="{{url_for('condition')}}">Tous les conditions</a>
                                 <a class="nav-link" href="/admin/ajouter_condition">Ajouter une condition</a>
                             </nav>
                         </div>

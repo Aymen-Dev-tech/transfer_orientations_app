@@ -4,29 +4,28 @@
 
 {% block content %}
 <div class="container-fluid px-4">
-  <form method="post" action="/ajouteter_condition">
+  <form method="post" action="{{url_for('modifier_condition', IdCondition = IdCondition)}}">
     <div class="mb-4">
       <h2 class="my-4">modifier une condition</h2>
-      <select id="disabledSelect" class="form-select">
-        <option>id_condition : 3</option>
-      </select>
-      <select class="form-select my-4" aria-label="Default select example">
+      <select name="category" class="form-select my-4" aria-label="Default select example">
         <option value="" disabled selected>catégorie</option>
-        <option value="0">condition d'orientations</option>
-        <option value="1">condition de transfer interne</option>
-        <option value="2">condition de transfer externe</option>
+        <option value="orientation">condition d'orientation</option>
+        <option value="transfer interne">condition de transfer interne</option>
+        <option value="transfer externe">condition de transfer externe</option>
       </select>
-      <select class="form-select mt-4" aria-label="Default select example">
+      <select name="faculty" class="form-select mt-4" aria-label="Default select example">
         <option value="" disabled selected>faculté</option>
-        <option value="0">NTIC</option>
-        <option value="1">Science humain</option>
-        <option value="2">Science eco</option>
-        <option value="3">Sport</option>
+        <option value="Nouvelle Technologies d'Informations et Communication">Nouvelle Technologies d'Informations et Communication</option>
+        <option value="Sience Humain et Social">Sience Humain et Social</option>
+        <option value="Economie">Economie</option>
+        <option value="Sience des Activites Sportives">Sience des Activites Sportives</option>
+        <option value="Bibliotheconomie">Bibliotheconomie</option>
+        <option value="Psychologie">Psychologie</option>
       </select>
     </div>
     <div class="mb-4">
       <label for="exampleFormControlTextarea1" class="form-label">description</label>
-      <textarea class="form-control" id="desc_condition" rows="3"></textarea>
+      <textarea name = "description" class="form-control" id="desc_condition" rows="3"></textarea>
     </div> 
     <button type="submit" class="btn btn-success">enregistrer les modifications</button>
   </form>

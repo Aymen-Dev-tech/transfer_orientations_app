@@ -8,7 +8,6 @@ absolute_db_path = 'C:/Users/pc-car/Desktop/project/transfer_orientations_app'
 database = absolute_db_path+'app_data.db'
 #=======
 #absolute_db_path = 'D:/Projects/transfer_app/'
-#absolute_db_path = '/home/aymen/DEV/TpEdl'
 #database = absolute_db_path+'app_data.db'
 # database = "/home/aymen/DEV/TpEdl/app_data.db"
 con = sqlite3.connect(database, check_same_thread=False)
@@ -94,9 +93,9 @@ def studentPasswordReset(email:str, oldPass:str, newPass:str):
 
 
 #admin(email,password,telephone,nom,prenom,id_dep,id_fac)
-def adminLogIn(email:str, password:str):
+def adminLogIn(email:str):
     try:
-        cursor.execute("select * from admin where email=:email and password=:password",{"email":email,"password":password})    
+        cursor.execute("select * from admin where email=:email",{"email":email})    
     except Error as e:
         print(e)
         return None
@@ -380,9 +379,12 @@ def getAllTransferRequests(id_transfer:int):
         return transfer_requests
 
 
-def getTransferRequests():
+def getTransferRequests(type):
     try:
-        cursor.execute('select * from transfer_request where etat = "En attendre"')
+        if type == "interne":
+            cursor.execute('select * from transfer_request where etat = "En attendre" and univ_origin = "constantine2"')
+        else:
+            cursor.execute('select * from transfer_request where etat = "En attendre" and univ_origin != "constantine2"')
     except Error as e:
         print(e)
         return None
@@ -398,11 +400,20 @@ def getStudentInfo(matricule):
     else:
         res = cursor.fetchone()
         return res
+def getStudentInfoByEmail(email):
+    try:
+        cursor.execute('select * from etudiant where email=:email',{'email':email})
+    except Error as e:
+        print(e)
+        return None
+    else:
+        res = cursor.fetchone()
+        return res
 #condition(id autoInc,id_fac , cond, type)
 #type should be INTERN, EXTERN or ORIENTATION
-def addCondition(id_fac:int,type:str, condition:str):
+def addCondition(id, id_fac:int,type:str, condition:str):
     try:
-        cursor.execute("insert into condition (id_fac,cond,type) values (?,?,?)",(id_fac,condition,type))
+        cursor.execute("insert into condition (id,id_fac,cond,type) values (?,?,?,?)",(id, id_fac,condition,type))
     except Error as e:
         print(e)
         return None
@@ -423,9 +434,9 @@ def deleteCondition(id:int):
         print('condition deleted !')
         return 'ok'
 
-def updateCondition(id:int,condition:str):
+def updateCondition(id:int,id_fac, type, cond:str):
     try:
-        cursor.execute("update condition set cond=:condition where id=:id",{'id':id,'condition':condition})
+        cursor.execute('update condition set cond=:cond, type=:type, id_fac=:id_fac where id=:id',{'id':id,'cond':cond, 'type':type, 'id_fac':id_fac})
     except Error as e:
         print(e)
         return None
@@ -452,27 +463,132 @@ def getConditions(id_fac:int,type:str):
             }
             conditions.append(c)
         return conditions
-
+def getAllConditions(idFac):
+    try:
+        cursor.execute("select * from condition where id_fac = {idFac}".format(idFac = idFac))
+    except Error as e:
+        print(e)
+        return None
+    else:
+        conditions =[]
+        res = cursor.fetchall()
+        for cond in res:
+            c = {
+                'id':cond[0],
+                'id_fac':cond[1],
+                'cond':cond[2],
+                'type':cond[3]
+            }
+            conditions.append(c)
+        return conditions
 
 
 #notification(id autoInc, matricule, message)
-def addNewNotification(matricule, message):
-    return
+def addNewNotification(matricule:int, message:str):
+    try:
+        cursor.execute('insert into notification (matricule,message) values(?,?)',(matricule,message))
+    except Error as e:
+        print(e)
+        return None
+    else:
+        con.commit()
+        print('notification added')
+        return 'ok'
+def deleteNotification(id:int):
+    try:
+        cursor.execute("delete from notification where id=:id",{'id':id})
+    except Error as e:
+        print(e)
+        return None
+    else:
+        con.commit()
+        print('notification deleted ')
+        return 'ok'
 
-def getAllNotifications(matricule):
-    return
+def getAllNotifications(matricule:int):
+    try:
+        cursor.execute('select * from notification where matricule=:matricule',{'matricule':matricule})
+    except Error as e:
+        print(e)
+        return None
+    else:
+        res = cursor.fetchall()
+        notifications = []
+        for notification in res:
+            n ={
+                'id':notification[0],
+                'matricule':notification[1],
+                'message':notification[2]
+            }
+            notifications.append(n)
+        return notifications
 
 
 
-#specialite
+#specialite(id autoInc, name, niveau, orientation_places, transfer_places, id_dep, id_fac)
 def getSpecialites(id_fac:int):
-    return
+    try:
+        cursor.execute("select * from specialite where id_fac=:id",{'id':id_fac})
+    except Error as e:
+        print(e)
+        return None
+    else:
+        res = cursor.fetchall()
+        specialities = []
+        for specialitie in res:
+            s = {
+                'id':specialitie[0],
+                'name':specialitie[1],
+                'niveau':specialitie[2],
+                'orientation_places':specialitie[3],
+                'transfer_places':specialitie[4],
+                'id_dep':specialitie[5],
+                'id_fac':specialitie[6]
+            }
+            specialities.append(s)
+        return specialities
+
+def getSpecialiteInformation(id_specialite:int):
+    try:
+        cursor.execute('select * from specialite where id=:id',{'id':id_specialite})
+    except Error as e:
+        print(e)
+        return None
+    else:
+        specialitie = cursor.fetchone()
+        return {
+                'id':specialitie[0],
+                'name':specialitie[1],
+                'niveau':specialitie[2],
+                'orientation_places':specialitie[3],
+                'transfer_places':specialitie[4],
+                'id_dep':specialitie[5],
+                'id_fac':specialitie[6]
+            }
 
 def updateTransferPlaces(id_specialite:int, nbr_places:int):
-    return
+    try:
+        cursor.execute("update specialite set transfer_places=:nbr where id=:id",{'id':id_specialite,'nbr':nbr_places})
+    except Error as e:
+        print(e)
+        return None
+    else:
+        con.commit()
+        print('transfer places updated !')
+        return 'ok'    
+
 
 def updateOrientationPlaces(id_specialite:int, nbr_places:int):
-    return
+    try:
+        cursor.execute("update specialite set orientation_places=:nbr where id=:id",{'id':id_specialite,'nbr':nbr_places})
+    except Error as e:
+        print(e)
+        return None
+    else:
+        con.commit()
+        print('orientation places updated !')
+        return 'ok'    
+
 
 #   faculte(id autoInc,name)
 #   departement(id autoInc,nom,id_fac)
@@ -481,13 +597,24 @@ def getFaculties():
 
 def getDepartements(id_fac:int):
     return
+def getLastIdOfTable(tableName):
+    try:
+        cursor.execute("SELECT MAX(id) FROM {tableName}".format(tableName = tableName))
+    except Error as e:
+        print(e)
+        return None
+    else:
+        res = cursor.fetchone()
+        return res[0]
 
 if __name__ == "__main__":
     #print(getAllTransferRequests(1))
-    print(getTransferRequests())
+    #print(getTransferRequests("interne"))
+    #print(getAllConditions(4))
+    #print(getStudentInfoByEmail("mohamed@gmail.com")[0])
     pass
-
-
+    
+    
 
 
 #print(studentLogIn("mohamed@gmail.com","mohamed"))

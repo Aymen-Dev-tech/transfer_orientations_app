@@ -11,7 +11,7 @@
                 <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5" width="150px" src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"><span class="font-weight-bold">Edogaru</span><span class="text-black-50">edogaru@mail.com.my</span><span> </span></div>
             </div>
             <div class="col-md-5 border-right">
-                <form class="row g-3" method="post">
+                <form class="row g-3" method="post" action="{{url_for('EditProfile')}}">
                     <h5>modifier profile</h5>
                     <div class="col-md-6">
                       <label for="nom" class="form-label">Nom</label>
@@ -34,22 +34,67 @@
                     </div>
                 </form>
                 <hr>
-                <form class="row g-3" method="post">
+                <form class="row g-3" method="post" action="{{url_for('AddAdmin')}}">
                   <h5>Ajouter un adminstrateur</h5>
                   <div class="col-12">
                     <label for="inputEmail4" class="form-label">Email</label>
-                    <input type="email" class="form-control" id="inputEmail4" placeholder="admin@gmail.com">
+                    <input name="email" type="email" class="form-control" id="inputEmail4" placeholder="admin@gmail.com">
                   </div>
                   <div class="col-12">
                     <label for="inputPassword4" class="form-label">mote de passe</label>
-                    <input type="password" class="form-control" id="inputPassword4" placeholder="********">
+                    <input name="password" type="password" class="form-control" id="inputPassword4" placeholder="********">
                   </div>
+                  <div class="col-12">
+                    <label for="inputEmail4" class="form-label">Telephone</label>
+                    <input name="telephone" type="text" class="form-control" id="inputEmail4" placeholder="Telephone">
+                  </div>
+                  <div class="col-12">
+                    <label for="inputEmail4" class="form-label">Nom</label>
+                    <input name="nom" type="text" class="form-control" id="inputEmail4" placeholder="nom">
+                  </div>
+                  <div class="col-12">
+                    <label for="inputEmail4" class="form-label">Prenom</label>
+                    <input name="prenom" type="text" class="form-control" id="inputEmail4" placeholder="Prenom">
+                  </div>
+                  <select name="faculty" class="form-select my-4" aria-label="Default select example">
+                    <option value="" disabled selected>faculté</option>
+                    <option value="Nouvelle Technologies d'Informations et Communication">Nouvelle Technologies d'Informations et Communication</option>
+                    <option value="Sience Humain et Social">Sience Humain et Social</option>
+                    <option value="Economie">Economie</option>
+                    <option value="Sience des Activites Sportives">Sience des Activites Sportives</option>
+                    <option value="Bibliotheconomie">Bibliotheconomie</option>
+                    <option value="Psychologie">Psychologie</option>
+                  </select>
+                  <select name="departement" class="form-select my-4" aria-label="Default select example">
+                    <option value="" disabled selected>departement</option>
+                    <option value="Math et Informatique">Math et Informatique</option>
+                    <option value="Technologies des Logiciel et de System d'Information">Technologies des Logiciel et de System d'Information</option>
+                    <option value="Informatique Fondamental et ses Applications">Informatique Fondamental et ses Applications</option>
+                    <option value="Sience Humain">Sience Humain</option>
+                    <option value="Sience Social">Sience Social</option>
+                    <option value="Sience de Psychologie">Sience de Psychologie</option>
+                    <option value="Orthoponie">Orthoponie</option>
+                    <option value="Sience d'Education">Sience d'Education</option>
+                    <option value="Tronc Commun Economie">Tronc Commun Economie</option>
+                    <option value="Science Economique">Science Economique</option>
+                    <option value="Finance et Comptabilite">Finance et Comptabilite</option>
+                    <option value="Science de Gestion">Science de Gestion</option>
+                    <option value="Sience de Psychologie">Sience de Psychologie</option>
+                    <option value="Science Commerciale">Science Commerciale</option>
+                    <option value="Tronc Commun Sport">Tronc Commun Sport</option>
+                    <option value="Education et Motricite">Education et Motricite</option>
+                    <option value="Entrainement Sportif et competitif">Entrainement Sportif et competitif</option>
+                    <option value="Tronc Commun Bibliotheconomie">Tronc Commun Bibliotheconomie</option>
+                    <option value="Sience de Psychologie">Sience de Psychologie</option>
+                    <option value="Archive">Archive</option>
+                    <option value="Bibliotheque">Bibliotheque</option>
+                  </select>
                   <div class="col-12">
                     <button type="submit" class="btn btn-success">Ajouter</button>
                   </div>
                 </form>
                 <hr>
-                <form class="row g-3" method="post" >
+                <form class="row g-3" method="post" action="{{url_for('DeleteAdmin')}}">
                   <h5>Supprimer un administrateur</h5>
                   <div class="col-12">
                     <label for="inputEmail4" class="form-label">Email</label>

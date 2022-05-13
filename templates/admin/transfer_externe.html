@@ -24,33 +24,17 @@
                           </tr>
                         </thead>
                         <tbody>
+                          {% for item in data %}
                           <tr>
-                            <th scope="row">1</th>
-                            <td><a href="/admin/demande_details/978654">#978654</a></td>
-                            <td>18497653126</td>
-                            <td>Science Eco</td>
-                            <td>En attente</td>
-                            <td><a class="link-success text-decoration-none" href="#">accepter</a></td>
-                            <td><a class="link-danger text-decoration-none" href="#">refuser</a></td>
+                            <th scope="row">{{data.index(item) + 1 }}</th>
+                            <td><a href="{{ url_for('transferInterneDetails', id_transfer = item[1]) }}">{{item[1]}}</a></td>
+                            <td>{{item[0]}}</td>
+                            <td>{{item[7]}}</td>
+                            <td>{{item[9]}}</td>
+                            <td><a class="link-success text-decoration-none" href="{{url_for('updateTransferEtat', matricule = item[0], State = 'accepter')}}">accepter</a></td>
+                            <td><a class="link-danger text-decoration-none" href="{{url_for('updateTransferEtat', matricule = item[0], State = 'refuser')}}">refuser</a></td>
                           </tr>
-                          <tr>
-                            <th scope="row">2</th>
-                            <td><a href="/admin/demande_details/978654">#978654</a></td>
-                            <td>18497653126</td>
-                            <td>NTIC</td>
-                            <td>En attente</td>
-                            <td><a class="link-success text-decoration-none" href="#">accepter</a></td>
-                            <td><a class="link-danger text-decoration-none" href="#">refuser</a></td>
-                          </tr>
-                          <tr>
-                            <th scope="row">3</th>
-                            <td><a href="/admin/demande_details/978654">#978654</a></td>
-                            <td>18497653126</td>
-                            <td>NTIC</td>
-                            <td>En attente</td>
-                            <td><a class="link-success text-decoration-none" href="#">accepter</a></td>
-                            <td><a class="link-danger text-decoration-none" href="#">refuser</a></td>
-                          </tr>
+                          {% endfor %}
                         </tbody>
                       </table>
                 </div>
