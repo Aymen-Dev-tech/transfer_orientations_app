@@ -1,0 +1,76 @@
+{% extends "etudiant/base.html" %}
+
+{% block title %}Ajouter demande orientation{% endblock %}
+
+{% block content %}
+
+<main>
+    <div class="container-fluid px-4">
+        <h2 class="my-4">Ajouter un demande d'orientation</h2>
+        <form method="post" action="#">
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">Matricule :</span>
+                <input type="text" class="form-control" placeholder="1818123456" aria-label="Username" aria-describedby="basic-addon1">
+            </div>
+            <select name="category" class="form-select my-4" aria-label="Default select example">
+                <option value="" disabled selected>Niveau d'etude</option>
+                <option value="orientations">L1</option>
+                <option value="orientations">L2</option>
+            </select>
+            <select name="category" class="form-select my-4" aria-label="Default select example">
+                <option value="" disabled selected>Année de Bac</option>
+                <option value="orientations">2021</option>
+                <option value="orientations">2020</option>
+                <option value="orientations">2019</option>
+                <option value="orientations">2018</option>
+                <option value="orientations">2017</option>
+                <option value="orientations">2016</option>
+                <option value="orientations">2015</option>
+            </select>
+            <select name="category" class="form-select my-4" aria-label="Default select example">
+                <option value="" disabled selected>Choix 1 </option>
+                <option value="orientations">TI</option>
+                <option value="orientations">GL</option>
+                <option value="orientations">SCI</option>
+                <option value="orientations">SI</option>
+            </select>
+            <select name="category" class="form-select my-4" aria-label="Default select example">
+                <option value="" disabled selected>Choix 2 </option>
+                <option value="orientations">TI</option>
+                <option value="orientations">GL</option>
+                <option value="orientations">SCI</option>
+                <option value="orientations">SI</option>
+            </select>
+            <select name="category" class="form-select my-4" aria-label="Default select example">
+                <option value="" disabled selected>Choix 3 </option>
+                <option value="orientations">TI</option>
+                <option value="orientations">GL</option>
+                <option value="orientations">SCI</option>
+                <option value="orientations">SI</option>
+            </select>
+            <select name="category" class="form-select my-4" aria-label="Default select example">
+                <option value="" disabled selected>Choix 4 </option>
+                <option value="orientations">TI</option>
+                <option value="orientations">GL</option>
+                <option value="orientations">SCI</option>
+                <option value="orientations">SI</option>
+            </select>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">
+                  j'ai verifié toutes mes informations
+                </label>
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary my-4">Envoyer la demande</button>
+            </div>
+        </form>
+    </div>
+</main>
+
+{% endblock content %}
+
+{% block javascripts %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script src="{{url_for('static',filename='scripts.js')}}"></script>
+{% endblock javascripts %}

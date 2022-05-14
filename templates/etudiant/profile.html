@@ -1,0 +1,41 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<main>
+    <div class="container-fluid px-4">
+        <h2 class="mt-4">Profile</h2>
+        <div class="row">
+            <div class="col-md-3 border-right">
+                <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5" width="150px" src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"><span class="font-weight-bold">Edogaru</span><span class="text-black-50">edogaru@mail.com.my</span><span> </span></div>
+            </div>
+            <div class="col-md-5 border-right">
+                <form class="row g-3" method="post" action="{{url_for('EditProfile')}}">
+                    <h5>modifier profile</h5>
+                    <div class="col-md-6">
+                      <label for="nom" class="form-label">Nom</label>
+                      <input type="text" class="form-control" id="nom">
+                    </div>
+                    <div class="col-md-6">
+                      <label for="prenom" class="form-label">Prenom</label>
+                      <input type="text" class="form-control" id="prenom">
+                    </div>
+                    <div class="col-12">
+                      <label for="inputEmail4" class="form-label">Email</label>
+                      <input type="email" class="form-control" id="inputEmail4" placeholder="admin@gmail.com">
+                    </div>
+                    <div class="col-12">
+                      <label for="inputPassword4" class="form-label">mote de passe</label>
+                      <input type="password" class="form-control" id="inputPassword4" placeholder="********">
+                    </div>
+                    <div class="col-12">
+                      <button type="submit" class="btn btn-primary">Enregister les modification</button>
+                    </div>
+                </form>
+                <hr class="my-4">
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock content %}

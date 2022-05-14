@@ -45,32 +45,33 @@
                 <div class="sb-sidenav-menu">
                     <div class="nav">
                         <div class="sb-sidenav-menu-heading">General</div>
-                        <a class="nav-link {% if request.path == '/admin' %} active {% endif %}" href="/admin">
+                        <a class="nav-link {% if request.path == '/admin' %} active {% endif %}" href="/mes_demandes">
                             <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                             Mes demandes
                         </a>
                         <div class="sb-sidenav-menu-heading">Orientations</div>
                         <a class="nav-link collapsed {% if ('/admin/tr'or'/admin/or') in request.path %} active{% endif %}" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
                             <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
-                            Transfer
+                            Orientation
                             <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                         </a>
                         <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                             <nav class="sb-sidenav-menu-nested nav">
                                 <a class="nav-link {% if request.path =='/admin/transfer_interne'%} active {% endif %}" href="/admin/transfer_interne">Les conditions</a>
-                                <a class="nav-link {% if request.path =='/admin/transfer_interne/details'%} active {% endif %}" href="#">Ajouter un demande orinentation</a>
+                                <a class="nav-link {% if request.path =='/admin/transfer_interne/details'%} active {% endif %}" href="/etudiant/ajouter_demande_orientation">Ajouter un demande orinentation</a>
                             </nav>
                         </div>
                         <div class="sb-sidenav-menu-heading">Transfer</div>
                         <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
                             <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
-                            Les Or
+                            Transfer
                             <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                         </a>
                         <div class="collapse" id="collapsePages" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
                             <nav class="sb-sidenav-menu-nested nav">
                                 <a class="nav-link" href="#">Les conditions</a>
-                                <a class="nav-link" href="#">Ajouter demande de transfers</a>
+                                <a class="nav-link" href="#">Ajouter demande de transfers interne</a>
+                                <a class="nav-link" href="#">Ajouter demande de transfers externe</a>
                             </nav>
                         </div>
                         <div class="sb-sidenav-menu-heading">Additional</div>

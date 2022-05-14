@@ -1,5 +1,5 @@
 
-from crypt import methods
+# from crypt import methods
 import email
 from unicodedata import category
 from flask import Flask, render_template, redirect, request, url_for, session, send_file
@@ -45,6 +45,15 @@ def internal_server_error(e):
 @app.route('/', methods = ["POST", "GET"])
 def index():
     return render_template('index.html')
+
+@app.route('/etudiant')
+def index_etudiant():
+    return render_template('etudiant/index.html')
+
+
+@app.route('/etudiant/ajouter_demande_orientation')
+def ajouter_demande_orientation():
+    return render_template('etudiant/ajouter_demande_orientation.html')
 
 @app.route('/connecter', methods = ["POST", "GET"])
 def login():

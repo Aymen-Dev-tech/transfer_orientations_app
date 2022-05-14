@@ -5,51 +5,37 @@
 {% block content %}
     <main>
         <div class="container-fluid px-4">
-            <h1 class="mt-4">Statistiques</h1>
+            <h1 class="mt-4">Mes demandes</h1>
             <ol class="breadcrumb mb-4">
                 <li class="breadcrumb-item active">Info</li>
             </ol>
-            <div class="row">
-                <div class="col-xl-3 col-md-6">
-                    <div class="card bg-primary text-white mb-4">
-                        <div class="card-body">N° des demandes de transfer Interne</div>
-                        <h2 class="text-center">03</h2>
-                        <div class="card-footer d-flex align-items-center justify-content-between">
-                            <a class="small text-white stretched-link" href="#">View Details</a>
-                            <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-md-6">
-                    <div class="card bg-warning text-white mb-4">
-                        <div class="card-body">N° des demandes de transfer Externe</div>
-                        <h2 class="text-center">11</h2>
-                        <div class="card-footer d-flex align-items-center justify-content-between">
-                            <a class="small text-white stretched-link" href="#">View Details</a>
-                            <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-md-6">
-                    <div class="card bg-success text-white mb-4">
-                        <div class="card-body">N° des demandes d'orientations</div>
-                        <h2 class="text-center">09</h2>
-                        <div class="card-footer d-flex align-items-center justify-content-between">
-                            <a class="small text-white stretched-link" href="#">View Details</a>
-                            <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-md-6">
-                    <div class="card bg-danger text-white mb-4">
-                        <div class="card-body">Les conditions</div>
-                        <h2 class="text-center">21</h2>
-                        <div class="card-footer d-flex align-items-center justify-content-between">
-                            <a class="small text-white stretched-link" href="#">View Details</a>
-                            <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                        </div>
-                    </div>
-                </div>
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col" class="table-info">#</th>
+                        <th scope="col" class="table-info">Id_demande</th>
+                        <th scope="col" class="table-info">Matricule Etudiant</th>
+                        <th scope="col" class="table-info">type</th>
+                        <th scope="col" class="table-info">Etat</th>
+                        <th scope="col" class="table-info"></th>
+                        <th scope="col" class="table-info"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">1</th>
+                            <td><a href="/etudiant/demande_details/54">#54</a></td>
+                            <td>18497653126</td>
+                            <td>transfer interne</td>
+                            <td>En attente</td>
+                            <td><a class="link-success text-decoration-none" href="#">modifier</a></td>
+                            <td><a class="link-danger text-decoration-none" href="#">Supprimer</a></td>
+                        </tr>
+                      
+                    </tbody>
+                  </table>
+            </div>
             </div>
         </div>
     </main>
