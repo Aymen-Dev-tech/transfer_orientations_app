@@ -4,12 +4,12 @@ from sqlite3 import Error
 #change this path corresponding to where the db file is at
 
 
-absolute_db_path = 'C:/Users/pc-car/Desktop/project/transfer_orientations_app'
-database = absolute_db_path+'app_data.db'
+#absolute_db_path = 'C:/Users/pc-car/Desktop/project/transfer_orientations_app'
+#database = absolute_db_path+'app_data.db'
 #=======
 #absolute_db_path = 'D:/Projects/transfer_app/'
 #database = absolute_db_path+'app_data.db'
-# database = "/home/aymen/DEV/TpEdl/app_data.db"
+database = "/home/aymen/DEV/TpEdl/app_data.db"
 con = sqlite3.connect(database, check_same_thread=False)
 cursor = con.cursor()
 READY = "ready"

@@ -46,10 +46,6 @@ def internal_server_error(e):
 def index():
     return render_template('index.html')
 
-@app.route('/etudiant')
-def index_etudiant():
-    return render_template('etudiant/index.html')
-
 
 @app.route('/etudiant/ajouter_demande_orientation')
 def ajouter_demande_orientation():
@@ -277,6 +273,11 @@ def Student_index():
     if session.get("email") != None:
         return render_template('etudiant/index.html')
     return redirect(url_for('login'))
+@app.route('/etudiant/profile')
+def studentProfile():
+    if session.get("email") != None:    
+        return render_template('etudiant/profile.html')
+    return redirect(url_for('login'))
 @app.route('/etudiant/upload', methods = ["POST", "GET"])
 def upload():
     if session.get("email") != None:
@@ -313,7 +314,7 @@ def downloadDocs(matricule):
         download_name=f'{matricule}.zip'
     )
 def GetAllStudentDocs(matricule):
-    #change this to the absolute path of Docs Folder
+    #change this to the absolute path of Docs Folder without removing matricule
     target = f'/home/aymen/DEV/TpEdl/Docs/{matricule}/*'
     stream = BytesIO()
     #zip all student docs
