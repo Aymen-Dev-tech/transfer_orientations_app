@@ -77,6 +77,11 @@
                 <option value="orientations">Sport</option>
                 <option value="orientations">Bla Bla</option>
             </select>
+            <form action="{{url_for('upload')}}" method="POST" enctype="multipart/form-data">
+                <input type="file" name="files" multiple="true"/>
+                <input type="submit" />
+            </form>
+            <hr class="my-4">
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                 <label class="form-check-label" for="flexCheckDefault">
