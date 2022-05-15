@@ -51,6 +51,17 @@ def index():
 def ajouter_demande_orientation():
     return render_template('etudiant/ajouter_demande_orientation.html')
 
+
+@app.route('/etudiant/ajouter_demende_transfer_interne')
+def ajouter_demande_transfer_interne():
+    return render_template('etudiant/ajouter_demende_transfer_interne.html')
+
+
+@app.route('/etudiant/ajouter_demende_transfer_externe')
+def ajouter_demande_transfer_externe():
+    return render_template('etudiant/ajouter_demende_transfer_externe.html')
+
+
 @app.route('/connecter', methods = ["POST", "GET"])
 def login():
     #get info from the form 
