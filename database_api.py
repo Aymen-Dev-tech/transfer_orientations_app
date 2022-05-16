@@ -4,12 +4,12 @@ from sqlite3 import Error
 #change this path corresponding to where the db file is at
 
 
-absolute_db_path = 'C:/Users/pc-car/Desktop/project/transfer_orientations_app'
-database = absolute_db_path+'app_data.db'
+#absolute_db_path = 'C:/Users/pc-car/Desktop/project/transfer_orientations_app'
+#database = absolute_db_path+'app_data.db'
 #=======
 #absolute_db_path = 'D:/Projects/transfer_app/'
 #database = absolute_db_path+'app_data.db'
-# database = "/home/aymen/DEV/TpEdl/app_data.db"
+database = "/home/aymen/DEV/TpEdl/app_data.db"
 con = sqlite3.connect(database, check_same_thread=False)
 cursor = con.cursor()
 READY = "ready"
@@ -378,6 +378,35 @@ def getAllTransferRequests(id_transfer:int):
             transfer_requests.append(transferRequest)
         return transfer_requests
 
+def getAllTransferRequestsOfStudent(matricule):
+    try:
+        cursor.execute(f'select * from transfer_request where matricule={matricule}')
+    except Error as e:
+        print(e)
+        return None
+    else:
+        res = cursor.fetchall()
+        transfer_requests = []
+        for tran_req in res:
+            transferRequest = {
+            'matricule':tran_req[0],
+            'transfer_id':tran_req[1],
+            'moyen_bac':tran_req[2],
+            'filiere_bac':tran_req[3],
+            'niveau_etude':tran_req[4],
+            'date_premier_insc':tran_req[5],
+            'formation':tran_req[6],
+            'univ_origin':tran_req[7],
+            'conge_academic':tran_req[8],
+            'etat':tran_req[9],
+            'choix1':tran_req[10],
+            'choix2':tran_req[11],
+            'choix3':tran_req[12],
+            'choix4':tran_req[13],
+        }
+            transfer_requests.append(transferRequest)
+        return transfer_requests
+
 
 def getTransferRequests(type):
     try:
@@ -599,7 +628,8 @@ def getDepartements(id_fac:int):
     return
 def getLastIdOfTable(tableName):
     try:
-        cursor.execute("SELECT MAX(id) FROM {tableName}".format(tableName = tableName))
+        if tableName != "transfer_request" : cursor.execute("SELECT MAX(id) FROM {tableName}".format(tableName = tableName))
+        cursor.execute("SELECT MAX(id_transfer) FROM {tableName}".format(tableName = tableName))
     except Error as e:
         print(e)
         return None
@@ -612,6 +642,7 @@ if __name__ == "__main__":
     #print(getTransferRequests("interne"))
     #print(getAllConditions(4))
     #print(getStudentInfoByEmail("mohamed@gmail.com")[0])
+    print(getLastIdOfTable("transfer_request"))
     pass
     
     

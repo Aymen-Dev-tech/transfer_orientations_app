@@ -52,9 +52,38 @@ def ajouter_demande_orientation():
     return render_template('etudiant/ajouter_demande_orientation.html')
 
 
-@app.route('/etudiant/ajouter_demende_transfer_interne')
+@app.route('/etudiant/ajouter_demende_transfer_interne', methods = ["POST", "GET"])
 def ajouter_demande_transfer_interne():
-    return render_template('etudiant/ajouter_demende_transfer_interne.html')
+    if session.get("email") != None:
+        if request.method == "POST":
+            id = request.form['id']
+            moyen = request.form['moyen']
+            filiereBac = request.form['Filiére du Bac']
+            date = request.form['date']
+            formation = request.form['Formation']
+            CongéAcademique = request.form['Congé academique']
+            Choix1 = request.form['Choix 1']
+            Choix2 = request.form['Choix 2']
+            Choix3 = request.form['Choix 3']
+            Choix4 = request.form['Choix 4']
+            idTransfer = db.getLastIdOfTable("transfer_request")
+            idTransfer+=1
+            files = request.files.getlist('files')
+            db.addTransferRequest(id, idTransfer, moyen, filiereBac, "bac",date, formation, "N/A", CongéAcademique, "en attendant", Choix1, Choix2, Choix3, Choix4)
+            db.closeConnection()
+            # if user does not select file, browser also
+            # submit a empty part without filename
+            if files[0].filename == '':
+                print('no files')
+                return redirect(request.url)
+            else:
+                for f in files:
+                    app.config['UPLOAD_FOLDER'] = CreateFolder(str(id))
+                    f.save(os.path.join(app.config['UPLOAD_FOLDER'] ,secure_filename(f.filename))) # this will secure the file
+                    print("save files to the file system")
+            return render_template('etudiant/ajouter_demende_transfer_interne.html')
+        return render_template('etudiant/ajouter_demende_transfer_interne.html')
+    return redirect(url_for("login"))
 
 
 @app.route('/etudiant/ajouter_demende_transfer_externe')
@@ -304,7 +333,6 @@ def upload():
                     StudentInfo = db.getStudentInfoByEmail(session.get("email"))
                     app.config['UPLOAD_FOLDER'] = CreateFolder(str(StudentInfo[0]))
                     f.save(os.path.join(app.config['UPLOAD_FOLDER'] ,secure_filename(f.filename))) # this will secure the file
-                    return 'file uploaded successfully'
         return render_template('etudiant/uploadingForm.html')
     return redirect(url_for('login'))
 
