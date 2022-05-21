@@ -58,18 +58,27 @@ def ajouter_demande_transfer_interne():
         if request.method == "POST":
             id = request.form['id']
             moyen = request.form['moyen']
+            niveauEtude = request.form['niveauEtude']
             filiereBac = request.form['Filiére du Bac']
             date = request.form['date']
             formation = request.form['Formation']
             CongéAcademique = request.form['Congé academique']
             Choix1 = request.form['Choix 1']
+            Choix1 = SetChoixId(Choix1)
             Choix2 = request.form['Choix 2']
+            Choix2 = SetChoixId(Choix2)
             Choix3 = request.form['Choix 3']
+            Choix3 = SetChoixId(Choix3)
             Choix4 = request.form['Choix 4']
+            Choix4 = SetChoixId(Choix4)
             idTransfer = db.getLastIdOfTable("transfer_request")
-            idTransfer+=1
+            if idTransfer != None: idTransfer+=1
+            idTransfer = 1
+            univOrigin = request.form['Université origin']
             files = request.files.getlist('files')
-            db.addTransferRequest(id, idTransfer, moyen, filiereBac, "bac",date, formation, "N/A", CongéAcademique, "en attendant", Choix1, Choix2, Choix3, Choix4)
+            db.addTransferRequest(id, idTransfer, moyen, filiereBac, niveauEtude, date, formation, univOrigin , CongéAcademique, "en attendant", Choix1, Choix2, Choix3, Choix4)
+            specialites = db.getAllSpecialites()
+            facultes = db.getFaculties()
             db.closeConnection()
             # if user does not select file, browser also
             # submit a empty part without filename
@@ -81,15 +90,69 @@ def ajouter_demande_transfer_interne():
                     app.config['UPLOAD_FOLDER'] = CreateFolder(str(id))
                     f.save(os.path.join(app.config['UPLOAD_FOLDER'] ,secure_filename(f.filename))) # this will secure the file
                     print("save files to the file system")
-            return render_template('etudiant/ajouter_demende_transfer_interne.html')
-        return render_template('etudiant/ajouter_demende_transfer_interne.html')
+            return render_template('etudiant/ajouter_demende_transfer_interne.html', specialites = specialites, facultes = facultes)
+        specialites = db.getAllSpecialites()
+        facultes = db.getFaculties()
+        db.closeConnection()
+        return render_template('etudiant/ajouter_demende_transfer_interne.html', specialites = specialites, facultes = facultes)
     return redirect(url_for("login"))
 
+@app.route('/etudiant/save', methods = ["POST", "GET"])
+def UpdateTransfer():
+    if session.get("email") != None:
+        if request.method == "POST":
+            StudentInfo = db.getStudentInfoByEmail(session.get('email'))
+            matricule = StudentInfo[0]
+            Choix1 = request.form['Choix 1']
+            Choix1 = SetChoixId(Choix1)
+            Choix2 = request.form['Choix 2']
+            Choix2 = SetChoixId(Choix2)
+            Choix3 = request.form['Choix 3']
+            Choix3 = SetChoixId(Choix3)
+            Choix4 = request.form['Choix 4']
+            Choix4 = SetChoixId(Choix4)
+            files = request.files.getlist('files')
+            db.updateTransferRequest(matricule, Choix1, Choix2, Choix3, Choix4)
+            db.closeConnection()
+            # if user does not select file, browser also
+            # submit a empty part without filename
+            if files[0].filename == '':
+                print('no files')
+                return redirect(request.url)
+            else:
+                for f in files:
+                    app.config['UPLOAD_FOLDER'] = CreateFolder(str(id))
+                    f.save(os.path.join(app.config['UPLOAD_FOLDER'] ,secure_filename(f.filename))) # this will secure the file
+                    print("save files to the file system")
+            return redirect(url_for('Student_index'))
+        return redirect(url_for('Student_index'))
+    return redirect(url_for("login"))
+def SetChoixId(choix):
+    ListOfChoix = db.getAllSpecialites()
+    db.closeConnection()
+    for item in ListOfChoix:
+        if item[1] == choix:
+            choix = ListOfChoix.index(item)
+            choix += 1
+            return choix
+    return
 
-@app.route('/etudiant/ajouter_demende_transfer_externe')
-def ajouter_demande_transfer_externe():
-    return render_template('etudiant/ajouter_demende_transfer_externe.html')
+@app.route('/etudiant/<matricule>/<transfer_id>/delete')
+def DeleteTransfer(matricule):
+    if session.get("email") != None:
+        db.deleteTransferRequest(matricule)
+        db.closeConnection()
+        return redirect(url_for('Student_index'))
+    return redirect(url_for("login"))
 
+@app.route('/etudiant/<matricule>/<transfer_id>/edit')
+def EditTransfer(transfer_id, matricule):
+    if session.get("email") != None:
+        transferInfo = db.getTransferRequest(transfer_id)
+        specialites = db.getAllSpecialites()
+        db.closeConnection()
+        return render_template('etudiant/Éditer_demande_transfer.html', specialites = specialites)
+    return redirect(url_for("login"))
 
 @app.route('/connecter', methods = ["POST", "GET"])
 def login():
@@ -179,6 +242,13 @@ def condition():
         conditions = db.getAllConditions(idFac)
         return render_template('admin/conditions.html', conditions = conditions)
     return redirect(url_for('login'))
+
+@app.route('/etudiant/conditions')
+def conditionInStudentDashBoard():
+    if session.get("email") != None:
+        conditions = db.getAllConditionsOfFacults()
+        return render_template('etudiant/conditions.html', conditions = conditions)
+    return redirect(url_for('login'))
     
 
 
@@ -240,7 +310,20 @@ def profile():
 @app.route('/admin/profile/Edit', methods = ["POST", "GET"])
 def EditProfile():
     if session.get("email") != None:
-        return redirect(url_for('profile'))
+        if request.method == "POST":
+            StudentInfo = db.getStudentInfoByEmail(session.get("email"))
+            nom = request.form.get('nom')
+            if nom == "" : nom = StudentInfo[3]
+            prenom = request.form.get('prenom')
+            if prenom == "": prenom = StudentInfo[4]
+            password = request.form.get('password')
+            if password == "" : password = StudentInfo[2]
+            email = request.form.get('email')
+            if email == "" : email = StudentInfo[1]
+            id = StudentInfo[0]
+            db.UpdateStudentProfile(email, password, nom, prenom, id)
+            db.closeConnection()
+        return redirect(url_for('login'))
     return redirect(url_for('login'))
 
 @app.route('/admin/profile/Add', methods = ["POST", "GET"])
@@ -311,31 +394,21 @@ def updateTransferEtat(matricule, State):
 @app.route('/etudiant')
 def Student_index():
     if session.get("email") != None:
+        StudentInfo = db.getStudentInfoByEmail(session.get("email"))
+        matricule = StudentInfo[0]
+        if db.getAllTransferRequests(matricule) != None:
+            data = db.getAllTransferRequests(matricule)
+            db.closeConnection()
+            return render_template('etudiant/index.html', data = data)
         return render_template('etudiant/index.html')
     return redirect(url_for('login'))
 @app.route('/etudiant/profile')
 def studentProfile():
     if session.get("email") != None:    
-        return render_template('etudiant/profile.html')
+        StudentInfo = db.getStudentInfoByEmail(session.get("email"))
+        db.closeConnection()
+        return render_template('etudiant/profile.html', StudentInfo = StudentInfo)
     return redirect(url_for('login'))
-@app.route('/etudiant/upload', methods = ["POST", "GET"])
-def upload():
-    if session.get("email") != None:
-        if request.method == "POST":
-            files = request.files.getlist('files')
-            # if user does not select file, browser also
-            # submit a empty part without filename
-            if files[0].filename == '':
-                print('no files')
-                return redirect(request.url)
-            else:
-                for f in files:
-                    StudentInfo = db.getStudentInfoByEmail(session.get("email"))
-                    app.config['UPLOAD_FOLDER'] = CreateFolder(str(StudentInfo[0]))
-                    f.save(os.path.join(app.config['UPLOAD_FOLDER'] ,secure_filename(f.filename))) # this will secure the file
-        return render_template('etudiant/uploadingForm.html')
-    return redirect(url_for('login'))
-
 #create folders for each student 
 def CreateFolder(StudentID):
     upload_folder = f"Docs/{StudentID}"

@@ -16,23 +16,24 @@
                         <th scope="col" class="table-info">#</th>
                         <th scope="col" class="table-info">Id_demande</th>
                         <th scope="col" class="table-info">Matricule Etudiant</th>
-                        <th scope="col" class="table-info">type</th>
+                        <th scope="col" class="table-info">université d'origine</th>
                         <th scope="col" class="table-info">Etat</th>
                         <th scope="col" class="table-info"></th>
                         <th scope="col" class="table-info"></th>
                       </tr>
                     </thead>
                     <tbody>
+                        {% for item in data %}
                         <tr>
-                            <th scope="row">1</th>
-                            <td><a href="/etudiant/demande_details/54">#54</a></td>
-                            <td>18497653126</td>
-                            <td>transfer interne</td>
-                            <td>En attente</td>
-                            <td><a class="link-success text-decoration-none" href="#">modifier</a></td>
-                            <td><a class="link-danger text-decoration-none" href="#">Supprimer</a></td>
+                            <th scope="row">{{data.index(item) + 1 }}</th>
+                            <td><a href="/etudiant/demande_details/54">{{item['transfer_id']}}</a></td>
+                            <td>{{item['matricule']}}</td>
+                            <td>{{item['univ_origin']}}</td>
+                            <td>{{item['etat']}}</td>
+                            <td><a class="link-success text-decoration-none" href="{{url_for('EditTransfer', transfer_id = item['transfer_id'], matricule = item['matricule'])}}">modifier</a></td>
+                            <td><a class="link-danger text-decoration-none" href="{{url_for('DeleteTransfer', transfer_id = item['transfer_id'], matricule = item['matricule'])}}">Supprimer</a></td>
                         </tr>
-                      
+                        {% endfor %}
                     </tbody>
                   </table>
             </div>

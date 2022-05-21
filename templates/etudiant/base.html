@@ -45,7 +45,7 @@
                 <div class="sb-sidenav-menu">
                     <div class="nav">
                         <div class="sb-sidenav-menu-heading">General</div>
-                        <a class="nav-link {% if request.path == '/admin' %} active {% endif %}" href="/mes_demandes">
+                        <a class="nav-link {% if request.path == '/admin' %} active {% endif %}" href="{{url_for('Student_index')}}">
                             <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                             Mes demandes
                         </a>
@@ -69,9 +69,8 @@
                         </a>
                         <div class="collapse" id="collapsePages" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
                             <nav class="sb-sidenav-menu-nested nav">
-                                <a class="nav-link" href="#">Les conditions</a>
-                                <a class="nav-link" href="/etudiant/ajouter_demende_transfer_interne">Ajouter demande de transfers interne</a>
-                                <a class="nav-link" href="/etudiant/ajouter_demende_transfer_externe">Ajouter demande de transfers externe</a>
+                                <a class="nav-link" href="{{url_for('conditionInStudentDashBoard')}}">Les conditions</a>
+                                <a class="nav-link" href="/etudiant/ajouter_demende_transfer_interne">Ajouter demande de transfers</a>
                             </nav>
                         </div>
                         <div class="sb-sidenav-menu-heading">Additional</div>

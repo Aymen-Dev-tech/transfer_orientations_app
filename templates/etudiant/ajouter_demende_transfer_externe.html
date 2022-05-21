@@ -15,64 +15,69 @@
                 les transfers externe fin : <b>10/11/2022</b>
             </div>
         </div>
-        <form method="post" action="#">
+        <form method="post" action="{{url_for('ajouter_demande_transfer_externe')}}" enctype="multipart/form-data">
             <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-addon1">Matricule :</span>
-                <input type="text" class="form-control" placeholder="1818123456" aria-label="Username" aria-describedby="basic-addon1">
+                <input name = "id" type="text" class="form-control" placeholder="1818123456" aria-label="Username" aria-describedby="basic-addon1">
             </div>
             <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-addon1">Moyen dy Bac :</span>
-                <input type="text" class="form-control" placeholder="00.00" aria-label="Username" aria-describedby="basic-addon1">
+                <input name="moyen" type="text" class="form-control" placeholder="00.00" aria-label="Username" aria-describedby="basic-addon1">
             </div>
-            <select name="category" class="form-select my-4" aria-label="Default select example">
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">Niveau d'étude :</span>
+                <input name="niveauEtude" type="text" class="form-control" placeholder="L1" aria-label="Username" aria-describedby="basic-addon1">
+            </div>
+            <select name="Filiére du Bac" class="form-select my-4" aria-label="Default select example">
                 <option value="" disabled selected>Filiére du Bac</option>
-                <option value="orientations">Math</option>
-                <option value="orientations">Science</option>
-                <option value="orientations">Math tehnique</option>
-                <option value="orientations">Gestion</option>
-                <option value="orientations">Langues</option>
-                <option value="orientations">Litterature et philosophe</option>
+                <option value="math">Math</option>
+                <option value="science">Science</option>
+                <option value="math technique">Math technique</option>
+                <option value="gestion">Gestion</option>
+                <option value="langues">Langues</option>
+                <option value="litterature et philosophe">Litterature et philosophe</option>
             </select>
             <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-addon1">Date du premiere inscription :</span>
-                <input type="text" class="form-control" placeholder="24/9/2000" aria-label="Username" aria-describedby="basic-addon1">
+                <input name="date" type="text" class="form-control" placeholder="24/9/2000" aria-label="Username" aria-describedby="basic-addon1">
             </div>
-            <select name="category" class="form-select my-4" aria-label="Default select example">
+            <select name="Formation" class="form-select my-4" aria-label="Default select example">
                 <option value="" disabled selected>Formation</option>
-                <option value="orientations">Math & Informatique</option>
-                <option value="orientations">Science Economie</option>
-                <option value="orientations">Sport</option>
-                <option value="orientations">Bla Bla</option>
+                <option value="Nouvelle Technologies d'Informations et Communication">Nouvelle Technologies d'Informations et Communication</option>
+                <option value="Sience Humain et Social">Sience Humain et Social</option>
+                <option value="Economie">Economie</option>
+                <option value="Sience des Activites Sportives">Sience des Activites Sportives</option>
+                <option value="Bibliotheconomie">Bibliotheconomie</option>
+                <option value="Psychologie">Psychologie</option>
             </select>
-            <select name="category" class="form-select my-4" aria-label="Default select example">
-                <option value="" disabled selected>Congé academique ?</option>
-                <option value="orientations">Oui</option>
-                <option value="orientations">Non</option>
+            <select name="Congé academique" class="form-select my-4" aria-label="Default select example">
+                <option value="" disabled selected>Congé academique</option>
+                <option value="oui">Oui</option>
+                <option value="non">Non</option>
             </select>
             <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-addon1">Université origin :</span>
-                <input type="text" class="form-control" placeholder="Nom de l'université" aria-label="Username" aria-describedby="basic-addon1">
+                <input name="Université origin" type="text" class="form-control" placeholder="Nom de l'université" aria-label="Username" aria-describedby="basic-addon1">
             </div>
             <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-addon1">Choix 1 :</span>
-                <input type="text" class="form-control" placeholder="Nom de l'université" aria-label="Username" aria-describedby="basic-addon1">
+                <input name="choix1" type="text" class="form-control" placeholder="Nom de l'université" aria-label="Username" aria-describedby="basic-addon1">
             </div>
             <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-addon1">Choix 2 :</span>
-                <input type="text" class="form-control" placeholder="Nom de l'université" aria-label="Username" aria-describedby="basic-addon1">
+                <input name="choix2" type="text" class="form-control" placeholder="Nom de l'université" aria-label="Username" aria-describedby="basic-addon1">
             </div>
             <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-addon1">Choix 3 :</span>
-                <input type="text" class="form-control" placeholder="Nom de l'université" aria-label="Username" aria-describedby="basic-addon1">
+                <input name="choix3" type="text" class="form-control" placeholder="Nom de l'université" aria-label="Username" aria-describedby="basic-addon1">
             </div>
             <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-addon1">Choix 4 :</span>
-                <input type="text" class="form-control" placeholder="Nom de l'université" aria-label="Username" aria-describedby="basic-addon1">
+                <input name="choix4" type="text" class="form-control" placeholder="Nom de l'université" aria-label="Username" aria-describedby="basic-addon1">
             </div>
-            <form action="{{url_for('upload')}}" method="POST" enctype="multipart/form-data">
+            <div>
                 <input type="file" name="files" multiple="true"/>
-                <input type="submit" />
-            </form>
+            </div>
             <hr class="my-4">
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">

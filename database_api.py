@@ -349,9 +349,9 @@ def getTransferRequest(id_transfer:int):
         return transferRequest
     
     
-def getAllTransferRequests(id_transfer:int):
+def getAllTransferRequests(matricule:int):
     try:
-        cursor.execute('select * from transfer_request where id_transfer=:id_transfer',{'id_transfer':id_transfer})
+        cursor.execute('select * from transfer_request where matricule=:matricule',{'matricule':matricule})
     except Error as e:
         print(e)
         return None
@@ -411,9 +411,9 @@ def getAllTransferRequestsOfStudent(matricule):
 def getTransferRequests(type):
     try:
         if type == "interne":
-            cursor.execute('select * from transfer_request where etat = "En attendre" and univ_origin = "constantine2"')
+            cursor.execute('select * from transfer_request where etat = "En attendre" and univ_origin = "constantine 2"')
         else:
-            cursor.execute('select * from transfer_request where etat = "En attendre" and univ_origin != "constantine2"')
+            cursor.execute('select * from transfer_request where etat = "En attendre" and univ_origin != "constantine 2"')
     except Error as e:
         print(e)
         return None
@@ -510,6 +510,24 @@ def getAllConditions(idFac):
             }
             conditions.append(c)
         return conditions
+def getAllConditionsOfFacults():
+    try:
+        cursor.execute("select * from condition")
+    except Error as e:
+        print(e)
+        return None
+    else:
+        conditions =[]
+        res = cursor.fetchall()
+        for cond in res:
+            c = {
+                'id':cond[0],
+                'id_fac':cond[1],
+                'cond':cond[2],
+                'type':cond[3]
+            }
+            conditions.append(c)
+        return conditions
 
 
 #notification(id autoInc, matricule, message)
@@ -577,6 +595,16 @@ def getSpecialites(id_fac:int):
             specialities.append(s)
         return specialities
 
+def getAllSpecialites():
+    try:
+        cursor.execute("select id, name from specialite")
+    except Error as e:
+        print(e)
+        return None
+    else:
+        res = cursor.fetchall()
+        return res
+
 def getSpecialiteInformation(id_specialite:int):
     try:
         cursor.execute('select * from specialite where id=:id',{'id':id_specialite})
@@ -622,7 +650,14 @@ def updateOrientationPlaces(id_specialite:int, nbr_places:int):
 #   faculte(id autoInc,name)
 #   departement(id autoInc,nom,id_fac)
 def getFaculties():
-    return
+    try:
+        cursor.execute("select * from faculte")
+    except Error as e:
+        print(e)
+        return None
+    else:
+        res = cursor.fetchall()
+        return res
 
 def getDepartements(id_fac:int):
     return
@@ -637,14 +672,24 @@ def getLastIdOfTable(tableName):
         res = cursor.fetchone()
         return res[0]
 
+def UpdateStudentProfile(email, password, nom, prenom, id):
+    try:
+        qry = "update etudiant set email = ?, password = ?, nom = ?, prenom = ? where matricule = ?"
+        cursor.execute(qry, (email, password, nom, prenom, id))
+    except Error as e:
+        print(e)
+        return None
+    else:
+        con.commit()
+        print('Student info updated !')
+        return 'ok' 
+
 if __name__ == "__main__":
     #print(getAllTransferRequests(1))
     #print(getTransferRequests("interne"))
     #print(getAllConditions(4))
     #print(getStudentInfoByEmail("mohamed@gmail.com")[0])
-    print(getLastIdOfTable("transfer_request"))
     pass
-    
     
 
 
