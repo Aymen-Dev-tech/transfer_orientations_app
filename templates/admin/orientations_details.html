@@ -1,0 +1,113 @@
+{% extends "admin/base.html" %}
+
+{% block title %}oriantation details{% endblock %}
+
+{% block content %}
+<main>
+    <div class="container-fluid px-4">
+        <h1 class="mt-4"><a class="link-dark" href="#">Liste des orientations</a>/details:</h1>
+        <div class="card mb-4">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link active" id="etudiant-tab" data-bs-toggle="tab" data-bs-target="#etudiant" type="button" role="tab" aria-controls="etudiant" aria-selected="true"><b>Info d'etudiant</b></button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false"><b>Info de orientation</b></button>
+                </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="etudiant" role="tabpanel" aria-labelledby="etudiant-tab">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td><b>Matricule</b></td>
+                                <td>{{StudentInfo[0]}}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Nom</b></td>
+                                <td>{{StudentInfo[3]}}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Prenom</b></td>
+                                <td>{{StudentInfo[4]}}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Sexe</b></td>
+                                <td>{{StudentInfo[6]}}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Email</b></td>
+                                <td>{{StudentInfo[1]}}</td>
+                            </tr>
+                            <tr>
+                                <td><b>N°télphone</b></td>
+                                <td>{{StudentInfo[5]}}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Date de naissance</b></td>
+                                <td>{{StudentInfo[7]}}</td>
+                            </tr>
+                        </tbody>
+                      </table>
+                </div>
+                <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td><b>Id de oriantation</b></td>
+                                <td>{{orintationInfo['id_orientation']}}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Niveau d'etude</b></td>
+                                <td>{{orintationInfo['niveau_etude']}}</td>
+                            </tr>
+                            <tr>
+                                <td><b>date de premier inscription</b></td>
+                                <td>{{orintationInfo['date_premier_insc']}}</td>
+                            </tr>
+                            <tr>
+                                <td><b>etat</b></td>
+                                <td>{{orintationInfo['etat']}}</td>
+                            </tr>
+                            <tr>
+                                <td><b>choix-1</b></td>
+                                <td>{{orintationInfo['choix1']}}</td>
+                            </tr>
+                            <tr>
+                                <td><b>choix-2</b></td>
+                                <td>{{orintationInfo['choix2']}}</td>
+                            </tr>
+                            <tr>
+                                <td><b>choix-3</b></td>
+                                <td>{{orintationInfo['choix3']}}</td>
+                            </tr>
+                            <tr>
+                                <td><b>choix-4</b></td>
+                                <td>{{orintationInfo['choix4']}}</td>
+                            </tr>
+                        </tbody>
+                      </table>
+                </div>
+                <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">...</div>
+            </div>
+            <div class="d-grid gap-2 d-md-block">
+                <a href="{{url_for('updateOrientationEtat', matricule = orintationInfo['matricule'], State = 'accepted')}}">
+                    <button type="button" class="btn btn-outline-success">Accepter</button>
+                </a>
+                <a href="{{url_for('updateOrientationEtat', matricule = orintationInfo['matricule'], State = 'refused')}}">
+                    <button type="button" class="btn btn-outline-danger">Refuser</button>
+                </a>
+                <a href="{{url_for('downloadDocs', matricule = orintationInfo['matricule'])}}">
+                    <button type="button" class="btn btn-outline-danger">télécharger les documents</button>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</main>
+<script src="{{url_for('static',filename='test.js')}}"></script>
+{% endblock content %}
+{% block javascripts %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script src="{{url_for('static',filename='scripts.js')}}"></script>
+{% endblock javascripts %}

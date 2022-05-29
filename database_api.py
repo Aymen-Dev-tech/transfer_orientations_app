@@ -138,6 +138,17 @@ def adminPasswordReset(email:str, newPass:str):
             print('password reset success')
             con.commit()
             return 'ok'
+def UpdateAdminInfo(oldEmail, email, password, nom, prenom):
+        try:
+            qry = "update admin set email = ?, password = ?, nom = ?, prenom = ? where email = ?"
+            cursor.execute(qry, (email, password, nom, prenom, oldEmail))
+        except Error as e:
+            print(e)
+            return None
+        else:
+            print('Update Admin Info Done !')
+            con.commit()
+            return 'ok'
 
 
 #orientation(id autoInc,id_fac,start,finish)
@@ -190,7 +201,35 @@ def getOrientationDeadline(id_fac:int):
     return None
 
 def getAllOrientations():
-    return
+    try:
+        cursor.execute("select matricule, id_orientation, etat from orientation_request")
+    except Error as e:
+        print(e)
+        return None
+    else:
+        res = cursor.fetchall()
+        return res
+
+def getOrientationRequest(id_orientation):
+    try:
+        cursor.execute('select * from orientation_request where id_orientation=:id_orientation',{'id_orientation':id_orientation})
+    except Error as e:
+        print(e)
+        return None
+    else:
+        res = cursor.fetchone()
+        OrientationRequest = {
+            'matricule':res[0],
+            'id_orientation':res[1],
+            'niveau_etude':res[2],
+            'date_premier_insc':res[3],
+            'etat':res[4],
+            'choix1':res[5],
+            'choix2':res[6],
+            'choix3':res[7],
+            'choix4':res[8],
+        }
+        return OrientationRequest
 
 #transfer(id autoInc,id_fac,start,finish)
 def addTransfer(id_fac:int,start:str,finish:str):
@@ -322,6 +361,17 @@ def setTransferRequestState(matricule:int, etat:str):
         print('transfer request state updated')
         return 'ok'
 
+def setOrientationRequestState(matricule:int, etat:str):
+    try:
+        cursor.execute('update orientation_request set etat=:etat where matricule=:matricule',{'matricule':matricule,'etat':etat})
+    except Error as e:
+        print(e)
+        return None
+    else:
+        con.commit()
+        print('transfer request state updated')
+        return 'ok'
+
 def getTransferRequest(id_transfer:int):
     try:
         cursor.execute('select * from transfer_request where id_transfer=:id_transfer',{'id_transfer':id_transfer})
@@ -411,9 +461,9 @@ def getAllTransferRequestsOfStudent(matricule):
 def getTransferRequests(type):
     try:
         if type == "interne":
-            cursor.execute('select * from transfer_request where etat = "En attendre" and univ_origin = "constantine 2"')
+            cursor.execute('select * from transfer_request where etat = "En attendant" and univ_origin = "constantine 2"')
         else:
-            cursor.execute('select * from transfer_request where etat = "En attendre" and univ_origin != "constantine 2"')
+            cursor.execute('select * from transfer_request where etat = "En attendant" and univ_origin != "constantine 2"')
     except Error as e:
         print(e)
         return None
@@ -683,13 +733,23 @@ def UpdateStudentProfile(email, password, nom, prenom, id):
         con.commit()
         print('Student info updated !')
         return 'ok' 
+def DeleteAdmin(email):
+    try:
+        cursor.execute("delete from admin where email = :email;", {'email': email})
+    except Error as e:
+        print(e)
+        return None
+    else:
+        con.commit()
+        print('admin is deleted !')
+        return 'ok' 
 
 if __name__ == "__main__":
     #print(getAllTransferRequests(1))
     #print(getTransferRequests("interne"))
     #print(getAllConditions(4))
-    #print(getStudentInfoByEmail("mohamed@gmail.com")[0])
-    pass
+    #print(getStudentInfo(14141414))
+    print(getAllOrientations())
     
 
 

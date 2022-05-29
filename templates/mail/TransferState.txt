@@ -1,4 +1,4 @@
 Dear {{ user}},
 
-your transfer State is {{State}}
+your transfer State was {{State}}
 

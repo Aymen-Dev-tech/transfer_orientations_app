@@ -15,7 +15,7 @@
                         <div class="card-body">N° des demandes de transfer Interne</div>
                         <h2 class="text-center">{{numberOfTransferInterne}}</h2>
                         <div class="card-footer d-flex align-items-center justify-content-between">
-                            <a class="small text-white stretched-link" href="#">View Details</a>
+                            <a class="small text-white stretched-link" href="{{url_for('transferInterne')}}">View Details</a>
                             <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                         </div>
                     </div>
@@ -25,7 +25,7 @@
                         <div class="card-body">N° des demandes de transfer Externe</div>
                         <h2 class="text-center">{{numberOfTransferExterne}}</h2>
                         <div class="card-footer d-flex align-items-center justify-content-between">
-                            <a class="small text-white stretched-link" href="#">View Details</a>
+                            <a class="small text-white stretched-link" href="{{url_for('transferExterne')}}">View Details</a>
                             <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                         </div>
                     </div>
@@ -45,7 +45,7 @@
                         <div class="card-body">Les conditions</div>
                         <h2 class="text-center">{{numberOfConditions}}</h2>
                         <div class="card-footer d-flex align-items-center justify-content-between">
-                            <a class="small text-white stretched-link" href="#">View Details</a>
+                            <a class="small text-white stretched-link" href="{{url_for('condition')}}">View Details</a>
                             <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                         </div>
                     </div>

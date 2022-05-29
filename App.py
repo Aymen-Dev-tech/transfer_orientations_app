@@ -219,8 +219,20 @@ def transferExterne():
 
 @app.route('/admin/orientations')
 def orientations():
-    return render_template('admin/orientations.html')
+    if session.get("email") != None:
+        return render_template('admin/orientations.html', data = db.getAllOrientations())
+    return redirect(url_for('login'))
 
+@app.route('/admin/orientation_details/<id_orientation>/')
+def orientationDetails(id_orientation):
+    if session.get("email") != None:
+        id_orientation = int(id_orientation)
+        orientationInfo = db.getOrientationRequest(id_orientation)
+        matricule = orientationInfo['matricule']
+        StudentInfo = db.getStudentInfo(matricule)
+        db.closeConnection()
+        return render_template('admin/orientations_details.html', orintationInfo = orientationInfo, StudentInfo = StudentInfo)
+    return redirect(url_for('login'))
 
 @app.route('/admin/demande_details/<id_transfer>/')
 def transferInterneDetails(id_transfer):
@@ -304,10 +316,39 @@ def DeleteCondition(IdCondition):
 @app.route('/admin/profile')
 def profile():
     if session.get("email") != None:
-        return render_template('admin/profile.html')
+        AdminInfo = db.adminLogIn(session.get("email"))
+        return render_template('admin/profile.html', AdminInfo = AdminInfo)
+    return redirect(url_for('login'))
+@app.route('/admin/profile/Edit', methods = ["POST", "GET"])
+def EditAdminProfile():
+    if session.get("email") != None:
+        if request.method == "POST":
+            AdminInfo = db.adminLogIn(session.get("email"))
+            nom = request.form.get('nom')
+            if nom == "" : nom = AdminInfo['nom']
+            prenom = request.form.get('prenom')
+            if prenom == "": prenom = AdminInfo['prenom']
+            password = request.form.get('password')
+            if password == "" : password = AdminInfo['password']
+            email = request.form.get('email')
+            if email == "" : email = session.get("email")
+            oldEmail = session.get("email")
+            db.UpdateAdminInfo(oldEmail, email, password, nom, prenom)
+            db.closeConnection()
+        return redirect(url_for('login'))
     return redirect(url_for('login'))
 
-@app.route('/admin/profile/Edit', methods = ["POST", "GET"])
+@app.route('/admin/profile/Delete_Admin', methods = ["POST", "GET"])
+def DeleteAdmin():
+    if session.get("email") != None:
+        if request.method == "POST":
+            email = request.form.get('email')
+            db.DeleteAdmin(email)
+            db.closeConnection()
+        return redirect(url_for('profile'))
+    return redirect(url_for('login'))
+
+@app.route('/etudiant/profile/Edit', methods = ["POST", "GET"])
 def EditProfile():
     if session.get("email") != None:
         if request.method == "POST":
@@ -367,19 +408,9 @@ def AddAdmin():
 
         return redirect(url_for('profile'))
     return redirect(url_for('login'))
-
-@app.route('/admin/profile/Delete', methods = ["POST", "GET"])
-def DeleteAdmin():
-    if session.get("email") != None:
-        return redirect(url_for('profile'))
-    return redirect(url_for('login'))
-
-
 @app.route('/admin/parametres')
 def parametres():
     return render_template('admin/parametres.html')
-
-
 @app.route('/admin/transfer_interne/<matricule>/<State>')
 def updateTransferEtat(matricule, State):
     #update Transfer Request Etat in db
@@ -391,6 +422,17 @@ def updateTransferEtat(matricule, State):
     send_email(StudentEmail, 'Transfer State','mail/TransferState', user=StudentEmail, State = State)
     print("sending email to " + StudentEmail)
     return redirect(url_for('transferInterne'))
+@app.route('/admin/orientation/<matricule>/<State>')
+def updateOrientationEtat(matricule, State):
+    #update Transfer Request Etat in db
+    db.setOrientationRequestState(int(matricule), State)
+    StudentInfo = db.getStudentInfo(matricule)
+    StudentEmail = StudentInfo[1]
+    db.closeConnection()
+    #send email to Student
+    send_email(StudentEmail, 'Orientation State','mail/OrientationState', user=StudentEmail, State = State)
+    print("sending email to " + StudentEmail)
+    return redirect(url_for('orientations'))
 @app.route('/etudiant')
 def Student_index():
     if session.get("email") != None:

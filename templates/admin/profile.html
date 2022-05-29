@@ -11,23 +11,23 @@
                 <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5" width="150px" src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"><span class="font-weight-bold">Edogaru</span><span class="text-black-50">edogaru@mail.com.my</span><span> </span></div>
             </div>
             <div class="col-md-5 border-right">
-                <form class="row g-3" method="post" action="{{url_for('EditProfile')}}">
+                <form class="row g-3" method="post" action="{{url_for('EditAdminProfile')}}">
                     <h5>modifier profile</h5>
                     <div class="col-md-6">
                       <label for="nom" class="form-label">Nom</label>
-                      <input type="text" class="form-control" id="nom">
+                      <input name="nom" type="text" class="form-control" id="nom" placeholder="{{AdminInfo['nom']}}">
                     </div>
                     <div class="col-md-6">
                       <label for="prenom" class="form-label">Prenom</label>
-                      <input type="text" class="form-control" id="prenom">
+                      <input  name="prenom" type="text" class="form-control" id="prenom" placeholder="{{AdminInfo['prenom']}}">
                     </div>
                     <div class="col-12">
                       <label for="inputEmail4" class="form-label">Email</label>
-                      <input type="email" class="form-control" id="inputEmail4" placeholder="admin@gmail.com">
+                      <input name="email" type="email" class="form-control" id="inputEmail4" placeholder="{{AdminInfo['email']}}">
                     </div>
                     <div class="col-12">
                       <label for="inputPassword4" class="form-label">mote de passe</label>
-                      <input type="password" class="form-control" id="inputPassword4" placeholder="********">
+                      <input  name="password" type="password" class="form-control" id="inputPassword4" placeholder="********">
                     </div>
                     <div class="col-12">
                       <button type="submit" class="btn btn-primary">Enregister les modification</button>
@@ -98,11 +98,7 @@
                   <h5>Supprimer un administrateur</h5>
                   <div class="col-12">
                     <label for="inputEmail4" class="form-label">Email</label>
-                    <input type="email" class="form-control" id="inputEmail4" placeholder="admin@gmail.com">
-                  </div>
-                  <div class="col-12">
-                    <label for="inputPassword4" class="form-label">mote de passe</label>
-                    <input type="password" class="form-control" id="inputPassword4" placeholder="********">
+                    <input name = "email" type="email" class="form-control" id="inputEmail4" placeholder="admin@gmail.com">
                   </div>
                   <div class="col-12">
                     <button type="submit" class="btn btn-danger">Supprimer</button>
