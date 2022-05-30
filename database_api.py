@@ -584,10 +584,13 @@ def getAllConditions(idFac):
                 'type':cond[3]
             }
             conditions.append(c)
+            ListOfFaculties = getFaculties()
+            for item in ListOfFaculties:
+                if item[0] == c['id_fac']: c['id_fac'] = item[1] 
         return conditions
-def getAllConditionsOfFacults():
+def getAllConditionsOfFacults(type):
     try:
-        cursor.execute("select * from condition")
+        cursor.execute("select * from condition where type=:type",{'type':type})
     except Error as e:
         print(e)
         return None
@@ -601,6 +604,9 @@ def getAllConditionsOfFacults():
                 'cond':cond[2],
                 'type':cond[3]
             }
+            ListOfFaculties = getFaculties()
+            for item in ListOfFaculties:
+                if item[0] == c['id_fac']: c['id_fac'] = item[1] 
             conditions.append(c)
         return conditions
 
@@ -770,12 +776,8 @@ def DeleteAdmin(email):
         return 'ok' 
 
 if __name__ == "__main__":
-    #print(getAllTransferRequests(1))
-    #print(getTransferRequests("interne"))
-    #print(getAllConditions(4))
-    #print(getStudentInfo(14141414))
-    #print(getOrientationRequest(1))
-    pass
+    print(getAllConditions(1))
+    
     
 
 

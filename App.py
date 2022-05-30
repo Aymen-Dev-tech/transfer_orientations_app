@@ -256,10 +256,10 @@ def condition():
         return render_template('admin/conditions.html', conditions = conditions)
     return redirect(url_for('login'))
 
-@app.route('/etudiant/conditions')
-def conditionInStudentDashBoard():
+@app.route('/etudiant/conditions/<type>')
+def conditionInStudentDashBoard(type):
     if session.get("email") != None:
-        conditions = db.getAllConditionsOfFacults()
+        conditions = db.getAllConditionsOfFacults(type)
         return render_template('etudiant/conditions.html', conditions = conditions)
     return redirect(url_for('login'))
     
