@@ -184,10 +184,11 @@ def index_admin():
     if session.get("email") != None:
         numberOfTransferInterne = len(db.getTransferRequests('interne'))
         numberOfTransferExterne = len(db.getTransferRequests("externe"))
+        numberOfOrientations = len(db.getOrientationRequests())
         AdminInfo = db.adminLogIn(session.get("email"))
         idFac = AdminInfo['id_fac']
         numberOfConditions = len(db.getAllConditions(idFac))
-        return render_template('admin/index.html', numberOfTransferInterne = numberOfTransferInterne, numberOfTransferExterne = numberOfTransferExterne, numberOfConditions = numberOfConditions)
+        return render_template('admin/index.html', numberOfTransferInterne = numberOfTransferInterne, numberOfTransferExterne = numberOfTransferExterne, numberOfConditions = numberOfConditions, numberOfOrientations = numberOfOrientations)
     return redirect(url_for('login'))
 
 
@@ -234,15 +235,15 @@ def orientationDetails(id_orientation):
         return render_template('admin/orientations_details.html', orintationInfo = orientationInfo, StudentInfo = StudentInfo)
     return redirect(url_for('login'))
 
-@app.route('/admin/demande_details/<id_transfer>/')
-def transferInterneDetails(id_transfer):
+@app.route('/admin/demande_details/<type>/<id_transfer>/')
+def transferInterneDetails(id_transfer, type):
     if session.get("email") != None:
         id_transfer = int(id_transfer)
         transferInfo = db.getTransferRequest(id_transfer)
         matricule = transferInfo['matricule']
         StudentInfo = db.getStudentInfo(matricule)
         db.closeConnection()
-        return render_template('admin/demande_details.html', transferInfo = transferInfo, StudentInfo = StudentInfo)
+        return render_template('admin/demande_details.html', transferInfo = transferInfo, StudentInfo = StudentInfo, type = type)
     return redirect(url_for('login'))
 
 

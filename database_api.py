@@ -202,7 +202,7 @@ def getOrientationDeadline(id_fac:int):
 
 def getAllOrientations():
     try:
-        cursor.execute("select matricule, id_orientation, etat from orientation_request")
+        cursor.execute("select matricule, id_orientation, etat from orientation_request where etat = 'En attendant'")
     except Error as e:
         print(e)
         return None
@@ -229,7 +229,24 @@ def getOrientationRequest(id_orientation):
             'choix3':res[7],
             'choix4':res[8],
         }
+        IdSpecialite = OrientationRequest['choix1']
+        OrientationRequest['choix1'] = getSpecialiteInformation(IdSpecialite)['name']
+        IdSpecialite = OrientationRequest['choix2']
+        OrientationRequest['choix2'] = getSpecialiteInformation(IdSpecialite)['name']
+        IdSpecialite = OrientationRequest['choix3']
+        OrientationRequest['choix3'] = getSpecialiteInformation(IdSpecialite)['name']
+        IdSpecialite = OrientationRequest['choix4']
+        OrientationRequest['choix4'] = getSpecialiteInformation(IdSpecialite)['name']
         return OrientationRequest
+def getOrientationRequests():
+    try:
+        cursor.execute('select * from orientation_request')
+    except Error as e:
+        print(e)
+        return None
+    else:
+        res = cursor.fetchall()
+        return res
 
 #transfer(id autoInc,id_fac,start,finish)
 def addTransfer(id_fac:int,start:str,finish:str):
@@ -396,6 +413,14 @@ def getTransferRequest(id_transfer:int):
             'choix3':res[12],
             'choix4':res[13],
         }
+        IdSpecialite = transferRequest['choix1']
+        transferRequest['choix1'] = getSpecialiteInformation(IdSpecialite)['name']
+        IdSpecialite = transferRequest['choix2']
+        transferRequest['choix2'] = getSpecialiteInformation(IdSpecialite)['name']
+        IdSpecialite = transferRequest['choix3']
+        transferRequest['choix3'] = getSpecialiteInformation(IdSpecialite)['name']
+        IdSpecialite = transferRequest['choix4']
+        transferRequest['choix4'] = getSpecialiteInformation(IdSpecialite)['name']
         return transferRequest
     
     
@@ -749,7 +774,8 @@ if __name__ == "__main__":
     #print(getTransferRequests("interne"))
     #print(getAllConditions(4))
     #print(getStudentInfo(14141414))
-    print(getAllOrientations())
+    #print(getOrientationRequest(1))
+    pass
     
 
 
