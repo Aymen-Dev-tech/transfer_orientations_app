@@ -787,8 +787,60 @@ def DeleteAdmin(email):
         print('admin is deleted !')
         return 'ok' 
 
+def getMoyensBac(id_fac:int):
+    try:
+        cursor.execute('select * from moyennes where id_fac=:id',{'id':id_fac})
+    except Error as e:
+        print(e)
+        return None
+    else:
+        res = cursor.fetchall()
+        moyens = []
+        for moy in res:
+            s = {
+                'id_fac':moy[0],
+                'filliere_bac':moy[1],
+                'annee':moy[2],
+                'moyen':moy[3],
+                'priority':moy[4],  
+            }
+            moyens.append(s)
+        return moyens
 
-def traiterTransferRequests():
+def selectAllTransferRequests(id_transfer:int):
+    try:
+        cursor.execute('select * from transfer_request where id_transfer=:id_transfer',{'id_transfer':id_transfer})
+    except Error as e:
+        print(e)
+        return None
+    else:
+        res = cursor.fetchall()
+        transfer_requests = []
+        for tran_req in res:
+            transferRequest = {
+            'matricule':tran_req[0],
+            'transfer_id':tran_req[1],
+            'moyen_bac':tran_req[2],
+            'filiere_bac':tran_req[3],
+            'niveau_etude':tran_req[4],
+            'date_premier_insc':tran_req[5],
+            'annee_bac':tran_req[6],
+            'univ_origin':tran_req[7],
+            'conge_academic':tran_req[8],
+            'etat':tran_req[9],
+            'choix1':tran_req[10],
+            'choix2':tran_req[11],
+            'choix3':tran_req[12],
+            'choix4':tran_req[13],
+        }
+            transfer_requests.append(transferRequest)
+        return transfer_requests
+
+def traiterTransferRequests(id_fac:int):
+    transfer = getTransferDeadline(id_fac)
+    specialites = getSpecialites(id_fac)
+    moyens = getMoyensBac(id_fac)
+    transfer_requests = selectAllTransferRequests(transfer["id"])
 
     return
 
