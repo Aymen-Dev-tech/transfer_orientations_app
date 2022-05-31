@@ -1,5 +1,6 @@
 import sqlite3
 from sqlite3 import Error
+from datetime import date
 
 #change this path corresponding to where the db file is at
 
@@ -836,13 +837,112 @@ def selectAllTransferRequests(id_transfer:int):
             transfer_requests.append(transferRequest)
         return transfer_requests
 
+
+def checkBacValidity(requests,specialities):
+    currentYear = date.today().year
+    rejected_requests = []
+    ready_requests = []
+    for req in requests:
+        if req["etat"] == SUSPENDED:
+            req["etat"] = REJECTED
+            rejected_requests.append(req)
+        else:
+            annee_bac = req["annee_bac"]
+            required_years = 3
+            for spec in specialities:
+                if spec["id"] == req["choix1"]:
+                    niveau = spec["niveau"]
+                    if niveau =="L2":
+                        required_years = 2
+                    elif niveau == "L3":
+                        required_years = 1
+
+            available_years = 5-(currentYear - annee_bac)
+            if req["conge_academic"] == 1:
+                available_years += 1
+            if available_years >= required_years:
+                ready_requests.append(req)
+                req["etat"] = READY
+            else:
+                rejected_requests.append(req)
+                req["etat"] = REJECTED
+
+    return {"rejected":rejected_requests,"ready":ready_requests}
+
 def traiterTransferRequests(id_fac:int):
     transfer = getTransferDeadline(id_fac)
     specialites = getSpecialites(id_fac)
     moyens = getMoyensBac(id_fac)
     transfer_requests = selectAllTransferRequests(transfer["id"])
+    
+    test_requests = []
+    test_requests.append({
+            'matricule':1212,
+            'transfer_id':1,
+            'moyen_bac':12,
+            'filiere_bac':"Math",
+            'niveau_etude':1,
+            'date_premier_insc':1,
+            'annee_bac':2018,
+            'univ_origin':2,
+            'conge_academic':1,
+            'etat':READY,
+            'choix1':1,
+            'choix2':1,
+            'choix3':1,
+            'choix4':1})
+    test_requests.append({
+            'matricule':1212,
+            'transfer_id':1,
+            'moyen_bac':12,
+            'filiere_bac':"Math",
+            'niveau_etude':1,
+            'date_premier_insc':1,
+            'annee_bac':2018,
+            'univ_origin':2,
+            'conge_academic':1,
+            'etat':READY,
+            'choix1':2,
+            'choix2':1,
+            'choix3':1,
+            'choix4':1})
+    test_requests.append({
+            'matricule':1212,
+            'transfer_id':1,
+            'moyen_bac':12,
+            'filiere_bac':"Math",
+            'niveau_etude':1,
+            'date_premier_insc':1,
+            'annee_bac':2018,
+            'univ_origin':2,
+            'conge_academic':0,
+            'etat':READY,
+            'choix1':2,
+            'choix2':1,
+            'choix3':1,
+            'choix4':1})
+    test_requests.append({
+            'matricule':12121212321321,
+            'transfer_id':1,
+            'moyen_bac':12,
+            'filiere_bac':"Math",
+            'niveau_etude':1,
+            'date_premier_insc':1,
+            'annee_bac':2018,
+            'univ_origin':2,
+            'conge_academic':1,
+            'etat':SUSPENDED,
+            'choix1':1,
+            'choix2':1,
+            'choix3':1,
+            'choix4':1})
+    
+    print(checkBacValidity(test_requests,specialites))
+
+
 
     return
+
 
 if __name__ == "__main__":
     print(getAllConditions(1))
