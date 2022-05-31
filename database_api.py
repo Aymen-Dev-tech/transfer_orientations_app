@@ -17,6 +17,18 @@ SUSPENDED = "suspended"
 REJECTED = "rejected"
 ACCEPTED = "accepted" 
 
+#Filliere de bac
+MATH = "Math"
+MATH_TECHNIQUE = "Math Technique"
+SCIENCE = "Science"
+LETTRE = "Lettre et Philosophie"
+LANGUE = "Langue Etrangere"
+ECONOMIE_GESTION = "Economie et Gestion"
+
+#conge academic
+HAS_CONJE = 1
+DONT_HAVE_CONJE =0
+
 #condition types
 INTERN = "intern"
 EXTERN = "extern"
@@ -323,11 +335,11 @@ def getAllTransfers():
 #conge academic 1 or 0 : if he has conge academic 1 else 0
 #choix references id of specialite
 def addTransferRequest(matricule:int, id_transfer:int, moyen_bac:float, filiere_bac:str, niveau_etude:str,
-date_premier_insc:str, formation:str, univ_origin:str, conge_academic:int, etat:str, choix1:int, choix2:int, choix3:int, choix4:int):
+date_premier_insc:str, annee_bac:int, univ_origin:str, conge_academic:int, etat:str, choix1:int, choix2:int, choix3:int, choix4:int):
     
     try:
         cursor.execute('insert into transfer_request values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)',(matricule,id_transfer,
-        moyen_bac,filiere_bac,niveau_etude,date_premier_insc,formation,univ_origin,conge_academic,etat,choix1,
+        moyen_bac,filiere_bac,niveau_etude,date_premier_insc,annee_bac,univ_origin,conge_academic,etat,choix1,
         choix2,choix3,choix4))
     except Exception as e:
         print(e)
@@ -404,7 +416,7 @@ def getTransferRequest(id_transfer:int):
             'filiere_bac':res[3],
             'niveau_etude':res[4],
             'date_premier_insc':res[5],
-            'formation':res[6],
+            'annee_bac':res[6],
             'univ_origin':res[7],
             'conge_academic':res[8],
             'etat':res[9],
@@ -441,7 +453,7 @@ def getAllTransferRequests(matricule:int):
             'filiere_bac':tran_req[3],
             'niveau_etude':tran_req[4],
             'date_premier_insc':tran_req[5],
-            'formation':tran_req[6],
+            'annee_bac':tran_req[6],
             'univ_origin':tran_req[7],
             'conge_academic':tran_req[8],
             'etat':tran_req[9],
@@ -470,7 +482,7 @@ def getAllTransferRequestsOfStudent(matricule):
             'filiere_bac':tran_req[3],
             'niveau_etude':tran_req[4],
             'date_premier_insc':tran_req[5],
-            'formation':tran_req[6],
+            'annee_bac':tran_req[6],
             'univ_origin':tran_req[7],
             'conge_academic':tran_req[8],
             'etat':tran_req[9],
@@ -774,6 +786,11 @@ def DeleteAdmin(email):
         con.commit()
         print('admin is deleted !')
         return 'ok' 
+
+
+def traiterTransferRequests():
+
+    return
 
 if __name__ == "__main__":
     print(getAllConditions(1))
