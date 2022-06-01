@@ -31,8 +31,8 @@
                             <td>{{item[0]}}</td>
                             <td>{{item[7]}}</td>
                             <td>{{item[9]}}</td>
-                            <td><a class="link-success text-decoration-none" href="{{url_for('updateTransferEtat', matricule = item[0], State = 'accepted')}}">accepter</a></td>
-                            <td><a class="link-danger text-decoration-none" href="{{url_for('updateTransferEtat', matricule = item[0], State = 'refused')}}">refuser</a></td>
+                            <td><a class="link-success text-decoration-none" href="{{url_for('updateTransferEtat', matricule = item[0], State = 'ready')}}">Ready</a></td>
+                            <td><a class="link-danger text-decoration-none" href="{{url_for('updateTransferEtat', matricule = item[0], State = 'rejected')}}">Rejected</a></td>
                           </tr>
                           {% endfor %}
                         </tbody>

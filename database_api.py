@@ -215,7 +215,8 @@ def getOrientationDeadline(id_fac:int):
 
 def getAllOrientations():
     try:
-        cursor.execute("select matricule, id_orientation, etat from orientation_request where etat = 'En attendant'")
+        qry = "select matricule, id_orientation, etat from orientation_request where etat = ?"
+        cursor.execute(qry, (SUSPENDED,))
     except Error as e:
         print(e)
         return None
@@ -499,9 +500,11 @@ def getAllTransferRequestsOfStudent(matricule):
 def getTransferRequests(type):
     try:
         if type == "interne":
-            cursor.execute('select * from transfer_request where etat = "En attendant" and univ_origin = "constantine 2"')
+            qry = 'select * from transfer_request where etat = ? and univ_origin = "constantine 2"'
+            cursor.execute(qry, (SUSPENDED,))
         else:
-            cursor.execute('select * from transfer_request where etat = "En attendant" and univ_origin != "constantine 2"')
+            qry = 'select * from transfer_request where etat = ? and univ_origin != "constantine 2"'
+            cursor.execute(qry, (SUSPENDED,))
     except Error as e:
         print(e)
         return None
@@ -945,7 +948,7 @@ def traiterTransferRequests(id_fac:int):
 
 
 if __name__ == "__main__":
-    print(getAllConditions(1))
+    print(getStudentInfoByEmail('salahe@gmail.com'))
     
     
 

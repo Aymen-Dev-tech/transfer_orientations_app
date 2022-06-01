@@ -70,10 +70,6 @@
                                 <td>{{transferInfo['niveau_etude']}}</td>
                             </tr>
                             <tr>
-                                <td><b>Formation</b></td>
-                                <td>{{transferInfo['formation']}}</td>
-                            </tr>
-                            <tr>
                                 <td><b>Univ origin</b></td>
                                 <td>{{transferInfo['univ_origin']}}</td>
                             </tr>
@@ -107,11 +103,11 @@
                 <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">...</div>
             </div>
             <div class="d-grid gap-2 d-md-block">
-                <a href="{{url_for('updateTransferEtat', matricule = transferInfo['matricule'], State = 'accepted')}}">
-                    <button type="button" class="btn btn-outline-success">Accepter</button>
+                <a href="{{url_for('updateTransferEtat', matricule = transferInfo['matricule'], State = 'ready')}}">
+                    <button type="button" class="btn btn-outline-success">Ready</button>
                 </a>
-                <a href="{{url_for('updateTransferEtat', matricule = transferInfo['matricule'], State = 'refused')}}">
-                    <button type="button" class="btn btn-outline-danger">Refuser</button>
+                <a href="{{url_for('updateTransferEtat', matricule = transferInfo['matricule'], State = 'rejected')}}">
+                    <button type="button" class="btn btn-outline-danger">Rejected</button>
                 </a>
                 <a href="{{url_for('downloadDocs', matricule = transferInfo['matricule'])}}">
                     <button type="button" class="btn btn-outline-danger">télécharger les documents</button>

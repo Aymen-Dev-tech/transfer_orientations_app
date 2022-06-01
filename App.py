@@ -52,17 +52,21 @@ def ajouter_demande_orientation():
     return render_template('etudiant/ajouter_demande_orientation.html')
 
 
-@app.route('/etudiant/ajouter_demende_transfer_interne', methods = ["POST", "GET"])
-def ajouter_demande_transfer_interne():
+@app.route('/etudiant/ajouter_demende_transfer', methods = ["POST", "GET"])
+def ajouter_demande_transfer():
     if session.get("email") != None:
         if request.method == "POST":
-            id = request.form['id']
+            id = db.getStudentInfoByEmail(session.get("email"))[0]
             moyen = request.form['moyen']
             niveauEtude = request.form['niveauEtude']
             filiereBac = request.form['Filiére du Bac']
             date = request.form['date']
-            formation = request.form['Formation']
+            anneeBac = request.form['anneeBac']
             CongéAcademique = request.form['Congé academique']
+            if CongéAcademique == "oui": 
+                CongéAcademique = 1 
+            else: 
+                CongéAcademique = 0 
             Choix1 = request.form['Choix 1']
             Choix1 = SetChoixId(Choix1)
             Choix2 = request.form['Choix 2']
@@ -76,7 +80,7 @@ def ajouter_demande_transfer_interne():
             idTransfer = 1
             univOrigin = request.form['Université origin']
             files = request.files.getlist('files')
-            db.addTransferRequest(id, idTransfer, moyen, filiereBac, niveauEtude, date, formation, univOrigin , CongéAcademique, "en attendant", Choix1, Choix2, Choix3, Choix4)
+            db.addTransferRequest(id, idTransfer, moyen, filiereBac, niveauEtude, date, anneeBac,  univOrigin , CongéAcademique, db.SUSPENDED, Choix1, Choix2, Choix3, Choix4)
             specialites = db.getAllSpecialites()
             facultes = db.getFaculties()
             db.closeConnection()
@@ -90,11 +94,11 @@ def ajouter_demande_transfer_interne():
                     app.config['UPLOAD_FOLDER'] = CreateFolder(str(id))
                     f.save(os.path.join(app.config['UPLOAD_FOLDER'] ,secure_filename(f.filename))) # this will secure the file
                     print("save files to the file system")
-            return render_template('etudiant/ajouter_demende_transfer_interne.html', specialites = specialites, facultes = facultes)
+            return render_template('etudiant/ajouter_demende_transfer.html', specialites = specialites, facultes = facultes)
         specialites = db.getAllSpecialites()
         facultes = db.getFaculties()
         db.closeConnection()
-        return render_template('etudiant/ajouter_demende_transfer_interne.html', specialites = specialites, facultes = facultes)
+        return render_template('etudiant/ajouter_demende_transfer.html', specialites = specialites, facultes = facultes)
     return redirect(url_for("login"))
 
 @app.route('/etudiant/save', methods = ["POST", "GET"])
@@ -240,6 +244,10 @@ def transferInterneDetails(id_transfer, type):
     if session.get("email") != None:
         id_transfer = int(id_transfer)
         transferInfo = db.getTransferRequest(id_transfer)
+        if transferInfo['conge_academic'] == 1:
+            transferInfo['conge_academic'] = 'oui'  
+        else:
+            transferInfo['conge_academic'] = 'non'
         matricule = transferInfo['matricule']
         StudentInfo = db.getStudentInfo(matricule)
         db.closeConnection()
@@ -416,12 +424,12 @@ def parametres():
 def updateTransferEtat(matricule, State):
     #update Transfer Request Etat in db
     db.setTransferRequestState(int(matricule), State)
-    StudentInfo = db.getStudentInfo(matricule)
-    StudentEmail = StudentInfo[1]
+    #StudentInfo = db.getStudentInfo(matricule)
+    #StudentEmail = StudentInfo[1]
     db.closeConnection()
     #send email to Student
-    send_email(StudentEmail, 'Transfer State','mail/TransferState', user=StudentEmail, State = State)
-    print("sending email to " + StudentEmail)
+    #send_email(StudentEmail, 'Transfer State','mail/TransferState', user=StudentEmail, State = State)
+    #print("sending email to " + StudentEmail)
     return redirect(url_for('transferInterne'))
 @app.route('/admin/orientation/<matricule>/<State>')
 def updateOrientationEtat(matricule, State):
