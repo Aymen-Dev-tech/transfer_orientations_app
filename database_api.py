@@ -811,6 +811,27 @@ def getMoyensBac(id_fac:int):
             moyens.append(s)
         return moyens
 
+class TransferRequest:
+    def __init__(self,matricule,transfer_id,moyen_bac,filliere_bac,niveau_etude,date_premier_insc,annee_bac,
+    univ_origin,conge_academic,etat,choix1,choix2,choix3,choix4):
+        self.matricule = matricule
+        self.transfer_id = transfer_id
+        self.moyen_bac = moyen_bac
+        self. filliere_bac = filliere_bac
+        self.niveau_etude = niveau_etude
+        self.date_premier_insc = date_premier_insc
+        self.annee_bac = annee_bac
+        self.univ_origin = univ_origin
+        self.conge_academic = conge_academic
+        self.etat = etat
+        self.choix1 = choix1
+        self.choix2 = choix2
+        self.choix3 = choix3
+        self.choix4 = choix4
+    
+    def __repr__(self):
+        return '{'+str(self.matricule)+','+str(self.transfer_id)+','+str(self.moyen_bac)+','+str(self.annee_bac)+','+self.etat+','+str(self.choix1)+','+str(self.choix2)+'}'
+
 def selectAllTransferRequests(id_transfer:int):
     try:
         cursor.execute('select * from transfer_request where id_transfer=:id_transfer',{'id_transfer':id_transfer})
@@ -821,6 +842,9 @@ def selectAllTransferRequests(id_transfer:int):
         res = cursor.fetchall()
         transfer_requests = []
         for tran_req in res:
+            request = TransferRequest(tran_req[0],tran_req[1],tran_req[2],tran_req[3],tran_req[4],
+            tran_req[5],tran_req[6],tran_req[7],tran_req[8],tran_req[9],tran_req[10],tran_req[11],tran_req[12]
+            ,tran_req[13])
             transferRequest = {
             'matricule':tran_req[0],
             'transfer_id':tran_req[1],
@@ -836,24 +860,20 @@ def selectAllTransferRequests(id_transfer:int):
             'choix2':tran_req[11],
             'choix3':tran_req[12],
             'choix4':tran_req[13],
-        }
-            transfer_requests.append(transferRequest)
+            }
+            transfer_requests.append(request)
         return transfer_requests
-
 
 def checkBacValidity(requests,specialities):
     currentYear = date.today().year
     rejected_requests = []
     ready_requests = []
     for req in requests:
-        if req["etat"] == SUSPENDED:
-            req["etat"] = REJECTED
-            rejected_requests.append(req)
-        else:
-            annee_bac = req["annee_bac"]
+        if req.etat == READY:
+            annee_bac = req.annee_bac
             required_years = 3
             for spec in specialities:
-                if spec["id"] == req["choix1"]:
+                if spec["id"] == req.choix1:
                     niveau = spec["niveau"]
                     if niveau =="L2":
                         required_years = 2
@@ -861,90 +881,126 @@ def checkBacValidity(requests,specialities):
                         required_years = 1
 
             available_years = 5-(currentYear - annee_bac)
-            if req["conge_academic"] == 1:
+            if req.conge_academic == 1:
                 available_years += 1
             if available_years >= required_years:
                 ready_requests.append(req)
-                req["etat"] = READY
+                req.etat = READY
             else:
                 rejected_requests.append(req)
-                req["etat"] = REJECTED
+                req.etat = REJECTED
+        else:
+            req.etat = REJECTED
+            rejected_requests.append(req)
 
     return {"rejected":rejected_requests,"ready":ready_requests}
 
+def sortRequestByMoyen(requests):
+    return sorted(requests,key=lambda x: x.moyen_bac, reverse=True)
+
+def getMoyenAndPriority(filliere, annee, moyens):
+    for moy in moyens:
+        if filliere == moy["filliere_bac"] and annee == moy["annee"]:
+            return {'moyen':moy["moyen"],'priority':moy["priority"]}
+    return None
+
 def traiterTransferRequests(id_fac:int):
     transfer = getTransferDeadline(id_fac)
+    #TODO check if the transfer in not null
     specialites = getSpecialites(id_fac)
     moyens = getMoyensBac(id_fac)
     transfer_requests = selectAllTransferRequests(transfer["id"])
     
-    test_requests = []
-    test_requests.append({
-            'matricule':1212,
-            'transfer_id':1,
-            'moyen_bac':12,
-            'filiere_bac':"Math",
-            'niveau_etude':1,
-            'date_premier_insc':1,
-            'annee_bac':2018,
-            'univ_origin':2,
-            'conge_academic':1,
-            'etat':READY,
-            'choix1':1,
-            'choix2':1,
-            'choix3':1,
-            'choix4':1})
-    test_requests.append({
-            'matricule':1212,
-            'transfer_id':1,
-            'moyen_bac':12,
-            'filiere_bac':"Math",
-            'niveau_etude':1,
-            'date_premier_insc':1,
-            'annee_bac':2018,
-            'univ_origin':2,
-            'conge_academic':1,
-            'etat':READY,
-            'choix1':2,
-            'choix2':1,
-            'choix3':1,
-            'choix4':1})
-    test_requests.append({
-            'matricule':1212,
-            'transfer_id':1,
-            'moyen_bac':12,
-            'filiere_bac':"Math",
-            'niveau_etude':1,
-            'date_premier_insc':1,
-            'annee_bac':2018,
-            'univ_origin':2,
-            'conge_academic':0,
-            'etat':READY,
-            'choix1':2,
-            'choix2':1,
-            'choix3':1,
-            'choix4':1})
-    test_requests.append({
-            'matricule':12121212321321,
-            'transfer_id':1,
-            'moyen_bac':12,
-            'filiere_bac':"Math",
-            'niveau_etude':1,
-            'date_premier_insc':1,
-            'annee_bac':2018,
-            'univ_origin':2,
-            'conge_academic':1,
-            'etat':SUSPENDED,
-            'choix1':1,
-            'choix2':1,
-            'choix3':1,
-            'choix4':1})
-    
-    print(checkBacValidity(test_requests,specialites))
+    accepted_requests = []
+
+    res = checkBacValidity(transfer_requests, specialites)
+    rejected_requests = res["rejected"]
+    ready = res["ready"]
+
+    ready = sortRequestByMoyen(ready)
+    print(ready)
+    for i in range(1,4):
+        priority = i
+        for request in ready:
+            if request.etat == READY:
+                moyAndPrioOfAcceptance = getMoyenAndPriority(request.filliere_bac,request.annee_bac,moyens)
+           
+            #if is null that filliere has no right in this specialite
+                if moyAndPrioOfAcceptance == None:
+                    request.etat = REJECTED
+                    rejected_requests.append(request)
+                    print("no right for filliere")
+                    #ready.remove(request)
+                #remove the request from the ready list TODO
+                else:
+                    min_moy = moyAndPrioOfAcceptance["moyen"]
+                    his_priority = moyAndPrioOfAcceptance["priority"]
+                    print(request)
+                    print(priority)
+                    print(his_priority)
+                    if his_priority <= priority:
+                        if request.moyen_bac >= min_moy:
+                            first_choice_index = None
+                            seconde_choice_index = None
+                            third_choice_index = None
+                            fourth_choice_index = None
+                            for k,specialite in enumerate(specialites):
+                                if request.choix1 == specialite["id"]:
+                                    first_choice_index = k
+                                elif request.choix2 == specialite["id"]:
+                                    seconde_choice_index = k
+                                elif request.choix3 == specialite["id"]:
+                                    third_choice_index = k
+                                elif request.choix4 == specialite["id"]:
+                                    fourth_choice_index = k
+
+                            if specialites[first_choice_index]["transfer_places"]>0:
+                                request.choix2 = None
+                                request.choix3 = None
+                                request.choix4 = None
+                                specialites[first_choice_index]["transfer_places"] -=1
+                                request.etat = ACCEPTED
+                                accepted_requests.append(request)
+                                #ready.remove(request)
+                            elif specialites[seconde_choice_index]["transfer_places"] >0 :
+                                request.choix1 = None
+                                request.choix3 = None
+                                request.choix4 = None
+                                specialites[seconde_choice_index]["transfer_places"] -=1
+                                request.etat = ACCEPTED
+                                accepted_requests.append(request)
+                                #ready.remove(request)
+                            elif specialites[third_choice_index]["transfer_places"] >0 :
+                                request.choix2 = None
+                                request.choix1 = None
+                                request.choix4 = None
+                                specialites[third_choice_index]["transfer_places"] -=1
+                                request.etat = ACCEPTED
+                                accepted_requests.append(request)
+                               # ready.remove(request)
+                            elif specialites[fourth_choice_index]["transfer_places"] >0 :
+                                request.choix2 = None
+                                request.choix3 = None
+                                request.choix1 = None
+                                specialites[fourth_choice_index]["transfer_places"] -=1
+                                request.etat = ACCEPTED
+                                accepted_requests.append(request)
+                               # ready.remove(request)
+                            else:
+                                request.etat = REJECTED
+                                rejected_requests.append(request)
+                               # ready.remove(request)
+                        else:
+                            print("min moy")
+                            request.etat = REJECTED
+                            rejected_requests.append(request)
+                           # ready.remove(request)
+        
+                        
+
+    return {'accepted':accepted_requests,'rejected':rejected_requests}
 
 
-
-    return
 
 
 if __name__ == "__main__":
