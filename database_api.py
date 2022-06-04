@@ -19,12 +19,12 @@ REJECTED = "rejected"
 ACCEPTED = "accepted" 
 
 #Filliere de bac
-MATH = "Math"
-MATH_TECHNIQUE = "Math Technique"
-SCIENCE = "Science"
-LETTRE = "Lettre et Philosophie"
-LANGUE = "Langue Etrangere"
-ECONOMIE_GESTION = "Economie et Gestion"
+MATH = "math"
+MATH_TECHNIQUE = "math technique"
+SCIENCE = "science"
+LETTRE = "litterature et philosophe"
+LANGUE = "langues"
+ECONOMIE_GESTION = "gestion"
 
 #conge academic
 HAS_CONJE = 1
