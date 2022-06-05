@@ -1,6 +1,7 @@
 import sqlite3
 from sqlite3 import Error
 from datetime import date
+from xml.dom.minidom import TypeInfo
 
 #change this path corresponding to where the db file is at
 
@@ -217,6 +218,16 @@ def getAllOrientations():
     try:
         qry = "select matricule, id_orientation, etat from orientation_request where etat = ?"
         cursor.execute(qry, (SUSPENDED,))
+    except Error as e:
+        print(e)
+        return None
+    else:
+        res = cursor.fetchall()
+        return res
+def getAllFacultys():
+    try:
+        qry = "select * from faculte"
+        cursor.execute(qry)
     except Error as e:
         print(e)
         return None
@@ -470,6 +481,34 @@ def getAllTransferRequests(matricule:int):
 def getAllTransferRequestsOfStudent(matricule):
     try:
         cursor.execute(f'select * from transfer_request where matricule={matricule}')
+    except Error as e:
+        print(e)
+        return None
+    else:
+        res = cursor.fetchall()
+        transfer_requests = []
+        for tran_req in res:
+            transferRequest = {
+            'matricule':tran_req[0],
+            'transfer_id':tran_req[1],
+            'moyen_bac':tran_req[2],
+            'filiere_bac':tran_req[3],
+            'niveau_etude':tran_req[4],
+            'date_premier_insc':tran_req[5],
+            'annee_bac':tran_req[6],
+            'univ_origin':tran_req[7],
+            'conge_academic':tran_req[8],
+            'etat':tran_req[9],
+            'choix1':tran_req[10],
+            'choix2':tran_req[11],
+            'choix3':tran_req[12],
+            'choix4':tran_req[13],
+        }
+            transfer_requests.append(transferRequest)
+        return transfer_requests
+def getAllTransferRequest():
+    try:
+        cursor.execute(f'select * from transfer_request')
     except Error as e:
         print(e)
         return None
@@ -997,14 +1036,18 @@ def traiterTransferRequests(id_fac:int):
                            # ready.remove(request)
         
                         
-
+    #change transfer request state
+    for item in rejected_requests:
+        setTransferRequestState(item.matricule, item.etat)
+    for item in accepted_requests:
+        setTransferRequestState(item.matricule, item.etat)
     return {'accepted':accepted_requests,'rejected':rejected_requests}
 
 
 
 
 if __name__ == "__main__":
-    print(getStudentInfoByEmail('salahe@gmail.com'))
+    print(getAllTransferRequests())
     
     
 

@@ -26,12 +26,10 @@
                         {% for item in data %}
                         <tr>
                             <th scope="row">{{data.index(item) + 1 }}</th>
-                            <td><a href="/etudiant/demande_details/54">{{item['transfer_id']}}</a></td>
+                            <td>{{item['transfer_id']}}</td>
                             <td>{{item['matricule']}}</td>
                             <td>{{item['univ_origin']}}</td>
                             <td>{{item['etat']}}</td>
-                            <td><a class="link-success text-decoration-none" href="{{url_for('EditTransfer', transfer_id = item['transfer_id'], matricule = item['matricule'])}}">modifier</a></td>
-                            <td><a class="link-danger text-decoration-none" href="{{url_for('DeleteTransfer', transfer_id = item['transfer_id'], matricule = item['matricule'])}}">Supprimer</a></td>
                         </tr>
                         {% endfor %}
                     </tbody>

@@ -206,7 +206,44 @@ def transferInterne():
          else:
              return render_template('admin/transfer_interne.html')
      return redirect(url_for('login'))
-
+@app.route('/admin/transfer_interne/StartTreatment')
+def StartTreatmentFortransferInterne():
+    if session.get("email") != None:
+        Facultys = db.getAllFacultys()
+        IdsOfFacultys = []
+        for faculty in Facultys:
+            IdsOfFacultys.append(faculty[0])
+        for Id in IdsOfFacultys:
+            db.traiterTransferRequests(Id)
+        TransferRequests = db.getAllTransferRequest()
+        for TransferRequest in TransferRequests:
+            StudentInfo = db.getStudentInfo(TransferRequest['matricule'])
+            StudentEmail = StudentInfo[1]
+            db.closeConnection()
+            #send email to Student
+            send_email(StudentEmail, 'Transfer State','mail/TransferState', user=StudentEmail, State = TransferRequest['etat'])
+            print("sending email to " + StudentEmail)
+        return render_template('admin/transfer_interne.html')
+    return redirect(url_for('login'))
+@app.route('/admin/transfer_externe/StartTreatment')
+def StartTreatmentFortransferExterne():
+    if session.get("email") != None:
+        Facultys = db.getAllFacultys()
+        IdsOfFacultys = []
+        for faculty in Facultys:
+            IdsOfFacultys.append(faculty[0])
+        for Id in IdsOfFacultys:
+            db.traiterTransferRequests(Id)
+        TransferRequests = db.getAllTransferRequest()
+        for TransferRequest in TransferRequests:
+            StudentInfo = db.getStudentInfo(TransferRequest['matricule'])
+            StudentEmail = StudentInfo[1]
+            db.closeConnection()
+            #send email to Student
+            send_email(StudentEmail, 'Transfer State','mail/TransferState', user=StudentEmail, State = TransferRequest['etat'])
+            print("sending email to " + StudentEmail)
+        return render_template('admin/transfer_externe.html')
+    return redirect(url_for('login'))
 
 
 @app.route('/admin/transfer_externe')
